@@ -7,6 +7,3 @@ def get_connection():
         '{port}/{namespace}'.format(**connection_params.CONNECTION_PARAMS)
     )
     return connection.mining_blocks
-
-db = get_connection()
-print(db.list_collection_names())
