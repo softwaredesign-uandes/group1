@@ -11,18 +11,10 @@ def main(args):
 		data_blocks = parse_file(args)
 		manager.insert_many(db, data_blocks)
 	elif args.remove:
-		if args.marvin:
-			manager.remove_model_blocks(db, "Marvin")
-		else:
-			manager.remove_model_blocks(db, "Zuck small")
-
+			manager.remove_model_blocks(db, "Marvin" if args.marvin else "Zuck small")
 	else:
-		if args.marvin:
-			block = manager.find_by_id(db, args.id, "Marvin")
-			manager.print_block(block.next())
-		else:
-			block = manager.find_by_id(db, args.id, "Zuck small")
-			manager.print_block(block.next())
+		block = manager.find_by_id(db, args.id, "Marvin" if args.marvin else "Zuck small")
+		manager.print_block(block.next())
 
 if __name__ == "__main__":
 	args = manage_arguments()
