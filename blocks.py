@@ -20,7 +20,7 @@ class Block:
 		'weight': self.weight,
 		'grade': self.grade,
 		}
-		return json.dumps(data)
+		return data
 
 	def __str__(self):
 		return "{} (id: {})\nX: {}\tY: {}\tZ: {}\nWeight: {}\tGrade: {}".format(self.model.upper(), self.id, self.x, self.y, self.z, self.weight, self.grade)

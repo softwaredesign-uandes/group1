@@ -7,3 +7,9 @@ def get_connection():
         '{port}/{namespace}'.format(**connection_params.CONNECTION_PARAMS)
     )
     return connection.mining_blocks
+def insert_one_block(db, block):
+
+    db.blocks.insert_one(block.as_json())
+
+def find_by_id(db, id):
+    return db.find({"id": id })
