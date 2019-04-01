@@ -18,7 +18,7 @@ def parse_zuck_small(file):
 		zs_data = list(map(float, raw_data[4:]))
 		weight, grade = zs_data[2], zs_data[3]
 		format_data += [weight, grade]
-		block_objects.append(Block(format_data[0], format_data[1], format_data[2], format_data[3], format_data[4], format_data[5]))
+		block_objects.append(Block('Zuck small', format_data[0], format_data[1], format_data[2], format_data[3], format_data[4], format_data[5]))
 	return block_objects
 
 
@@ -30,5 +30,5 @@ def parse_marvin(file):
 		m_data = list(map(float, raw_data[4:]))
 		weight, grade = m_data[0], m_data[2]
 		format_data += [weight, grade]
-		block_objects.append(Block(format_data[0], format_data[1], format_data[2], format_data[3], format_data[4], format_data[5]))
+		block_objects.append(Block('Marvin', format_data[0], format_data[1], format_data[2], format_data[3], format_data[4], format_data[5]))
 	return block_objects
