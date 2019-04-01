@@ -7,12 +7,15 @@ from bson.json_util import dumps
 
 def main(args):
 	db = manager.get_connection()
-	# print(db.list_collection_names())
 	if args.insert:
-		# data_blocks would be an array that is to be traveled and each element should be loaded to the database
 		data_blocks = parse_file(args)
-		for block in data_blocks:
-			manager.insert_one_block(db, block)
+		manager.insert_many(db, data_blocks)
+	elif args.remove:
+		if args.marvin:
+			manager.remove_model_blocks(db, "Marvin")
+		else:
+			manager.remove_model_blocks(db, "Zuck small")
+
 	else:
 		if args.marvin:
 			block = manager.find_by_id(db, args.id, "Marvin")
@@ -20,7 +23,6 @@ def main(args):
 		else:
 			block = manager.find_by_id(db, args.id, "Zuck small")
 			manager.print_block(block.next())
-		# here you should fetch the block from the database that has this id
 
 if __name__ == "__main__":
 	args = manage_arguments()
