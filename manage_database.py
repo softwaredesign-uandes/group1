@@ -10,14 +10,14 @@ def get_connection():
     return connection.mining_blocks
 
 def insert_one_block(db, block):
-	if find_by_id(db, block.id, block.model).limit(1).count() == 0:
+	if find_by_coordinates(db, block.id, block.model).limit(1).count() == 0:
 		db.blocks.insert_one(block.as_json())
 
 def insert_many(db, blocks):
 	db.blocks.insert_many(blocks)
 
-def find_by_id(db, id, model):
-    return db.blocks.find({"id": id, "model": model })
+def find_by_coordinates(db, x,y,z, model):
+    return db.blocks.find({"x": x,"y": y,"z": z, "model": model })
 
 def get_model_blocks(db, model):
 	return db.blocks.find({ "model": model })
