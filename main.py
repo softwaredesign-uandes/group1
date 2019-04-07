@@ -1,8 +1,5 @@
-from blocks import Block
 import manage_database as manager
 from arguments_manager import manage_arguments
-from file_parser import parse_file
-from bson.json_util import dumps
 
 
 def main(args):

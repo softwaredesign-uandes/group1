@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 import connection_params
-from blocks import Block
 from file_parser import parse_file, parse_headers
 
 def get_connection():
@@ -10,7 +9,7 @@ def get_connection():
     )
     return connection.mining_blocks
 
-def insert_new_mineral_deposit(db):
+def insert_new_mineral_deposit(db, mineral_deposit):
 	name = ""
 	while name == "":
 		name = input("What would you like to name this mineral deposit?\n>>> ")
@@ -58,9 +57,6 @@ def find_by_coordinates(db, mineral_deposit, block_model, coordinates_string):
 def get_all_blocks_from_block_model(db, mineral_deposit, block_model):
 	return db.blocks.find({ "mineral_deposit": mineral_deposit, "block_model": block_model })
 
-def print_block(response):
-	block = Block(response['block_model'], response['id'], response['x'], response['y'], response['z'], response['weight'], response['grade'])
-	print(block)
 
 def remove_all_blocks_from_block_model(db, mineral_deposit, block_model):
 	return db.blocks.remove({ "mineral_deposit_name": mineral_deposit, "block_model": block_model })
