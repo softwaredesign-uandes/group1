@@ -8,17 +8,16 @@ from bson.json_util import dumps
 def main(args):
 	db = manager.get_connection()
 	if args.insert:
-		if not args.block_model:
+		if not args.mineral_deposit:
+			manager.insert_new_mineral_deposit(db)
+		elif not args.block_model:
 			manager.insert_new_block_model(db, args.mineral_deposit, args.file_input)
 		else:
-			block_model = manager.fetch_block_model(db, args.mineral_deposit, args.block_model)
-			headers = block_model["fields"]
-			data_blocks = parse_file(headers, args.file_input)
-			manager.insert_many(db, data_blocks)
+			manager.insert_blocks(db, args.mineral_deposit, args.block_model, args.file_input)
 	elif args.remove:
-			manager.remove_model_blocks(db, args.model)
+			manager.remove__all_blocks_from_block_model(db, args.mineral_deposit, args.block_model)
 	else:
-		block = manager.find_by_id(db, args.coordinates, args.model)
+		block = manager.find_by_coordinates(db, args.mineral_deposit, args.block_model, args.coordinates)
 		manager.print_block(block.next())
 
 if __name__ == "__main__":
