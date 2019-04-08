@@ -1,4 +1,4 @@
-def parse_file(headers, file):
+def parse_file(file):
 	block_objects = []
 	file = open(file, "r")
 	for row in file:
