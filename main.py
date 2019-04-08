@@ -15,7 +15,7 @@ def main(args):
 			manager.remove__all_blocks_from_block_model(db, args.mineral_deposit, args.block_model)
 	else:
 		block = manager.find_by_coordinates(db, args.mineral_deposit, args.block_model, args.coordinates)
-		manager.print_block(block.next())
+		print(block.next())
 
 if __name__ == "__main__":
 	args = manage_arguments()
