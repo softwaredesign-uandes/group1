@@ -21,7 +21,7 @@ def manage_arguments():
 
 	# Directory of the file containing the data to be uploaded to the server
 	file_input = parser.add_argument_group("file_input")
-	file_input.add_argument("-f", "--file", help="Directory of the file containing the data to be uploaded to the server")
+	file_input.add_argument("-f", "--file_input", help="Directory of the file containing the data to be uploaded to the server")
 	
 	# Coordinates X, Y and Z of the desired block to be queried within the given block model
 	coordinates = parser.add_argument_group("coordinates")
