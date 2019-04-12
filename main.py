@@ -1,20 +1,29 @@
-import manage_database as manager
-from arguments_manager import manage_arguments
+from helpers.database_manager import Manager
+from helpers.arguments_manager import manage_arguments
 
 
 def main(args):
-	db = manager.get_connection()
+	db_manager = Manager()
+	mike = Container()
 	if args.insert:
 		if not args.mineral_deposit:
-			manager.insert_new_mineral_deposit(db)
+			db_manager.insert_new_mineral_deposit()
 		elif not args.block_model:
-			manager.insert_new_block_model(db, args.mineral_deposit, args.file_input)
+			db_manager.insert_new_block_model(args.mineral_deposit, args.file_input)
 		else:
-			manager.insert_blocks(db, args.mineral_deposit, args.block_model, args.file_input)
+			db_manager.insert_blocks(args.mineral_deposit, args.block_model, args.file_input)
 	elif args.remove:
-			manager.remove__all_blocks_from_block_model(db, args.mineral_deposit, args.block_model)
+		db_manager.remove__all_blocks_from_block_model(args.mineral_deposit, args.block_model)
+	elif args.metrics:
+		if args.mineral_deposit:
+			mineral_deposit = db_manager.fetch_mineral_deposit(args.mineral_deposit)
+			mike.set_mineral_deposit(mineral_deposit)
+			if args.block_model:
+				block_model = db_manager.fetch_block_model(args.mineral_deposit, args.block_model)
+				blocks = db_manager.get_all_blocks_from_block_model(args.mineral_deposit, args.block_model)
+				mike.set_block_model(block_model, blocks)
 	else:
-		block = manager.find_by_coordinates(db, args.mineral_deposit, args.block_model, args.coordinates)
+		block = db_manager.find_by_coordinates(args.mineral_deposit, args.block_model, args.coordinates)
 		print(block.next())
 
 if __name__ == "__main__":
