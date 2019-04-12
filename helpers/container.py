@@ -18,7 +18,7 @@ class  Container:
         self.block_model.add_blocks(blocks)
 
     def interact_with_user(self):
-        metrics = ['Number of blocks', 'Total weight of the mineral deposit', 'Total mineral weight of the mineral deposit']
+        metrics = ['Number of blocks', 'Total weight of the mineral deposit', 'Total mineral weight of the mineral deposit', 'Percentage of "Air" blocks']
         print("Choose a metric: ")
         for index in range(len(metrics)):
             print("\t{}: {}".format(index + 1, metrics[index]))
@@ -29,6 +29,9 @@ class  Container:
             print("The total weight of {} is {}.".format(self.mineral_deposit.name, self.get_total_weight_of_mineral_deposit()))
         elif metrics[response] == 'Total mineral weight of the mineral deposit':
             print("The total mineral weight of {} is {}.".format(self.mineral_deposit.name, self.get_total_mineral_weight_of_mineral_deposit()))
+        elif metrics[response] == 'Percentage of "Air" blocks':
+            print("The air blocks percentage of {} is {}.".format(self.mineral_deposit.name, self.get_air_blocks_percentage_of_mineral_deposit()))
+
 
 
 
@@ -40,6 +43,9 @@ class  Container:
 
     def get_total_mineral_weight_of_mineral_deposit(self):
         return self.block_model.get_total_mineral_weight()
+
+    def get_air_blocks_percentage_of_mineral_deposit(self):
+        return self.block_model.get_air_percentage()
 
 
 
