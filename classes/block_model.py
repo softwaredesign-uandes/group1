@@ -6,3 +6,6 @@ class BlockModel:
         self.headers = headers
         self.blocks = blocks
 
+    def count_blocks(self):
+    	return self.blocks.count()
+

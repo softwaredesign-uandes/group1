@@ -23,6 +23,7 @@ def main(args):
 				block_model = db_manager.fetch_block_model(args.mineral_deposit, args.block_model)
 				blocks = db_manager.get_all_blocks_from_block_model(args.mineral_deposit, args.block_model)
 				mike.set_block_model(block_model, blocks)
+		mike.interact_with_user()
 	else:
 		block = db_manager.find_by_coordinates(args.mineral_deposit, args.block_model, args.coordinates)
 		print(block.next())

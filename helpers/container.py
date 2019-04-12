@@ -16,3 +16,16 @@ class  Container:
         current_block_model = BlockModel(name, mineral_deposit, headers, blocks)
         self.block_model = current_block_model
 
+    def interact_with_user(self):
+        metrics = ['Number of blocks']
+        print("Choose a metric: ")
+        for index in range(len(metrics)):
+            print("\t{}: {}".format(index + 1, metrics[index]))
+        response = int(input("\t")) - 1
+        if metrics[response] == "Number of blocks":
+            print("This block model has {} blocks in it.".format(self.get_number_of_blocks()))
+
+
+    def get_number_of_blocks(self):
+        return self.block_model.count_blocks()
+
