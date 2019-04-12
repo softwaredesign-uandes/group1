@@ -1,13 +1,13 @@
 from pymongo import MongoClient
-import connection_params
-from file_parser import parse_file, parse_headers
+import helpers.connection_params as params
+from helpers.file_parser import parse_file, parse_headers
 
 
 class Manager():
 	def __init__(self):
 		connection = MongoClient(
 	        'mongodb://{user}:{password}@{host}:'
-	        '{port}/{namespace}'.format(**connection_params.CONNECTION_PARAMS)
+	        '{port}/{namespace}'.format(**params.CONNECTION_PARAMS)
 	    )
 		self.db = connection
 
@@ -15,7 +15,7 @@ class Manager():
 		name = ""
 		while name == "":
 			name = input("What would you like to name this mineral deposit?\n>>> ")
-			if fetch_mineral_deposit(self.db, mineral_deposit).limit(1).count() != 0:
+			if self.fetch_mineral_deposit(mineral_deposit).limit(1).count() != 0:
 				print("A mineral deposit with that name already exist.")
 				name = ""
 		self.db.mineral_deposits.insert_one({ "name": mineral_deposit })
@@ -28,7 +28,7 @@ class Manager():
 		name = ""
 		while name == "":
 			name = input("What would you like to name this block model?\n>>> ")
-			if fetch_block_model(self.db, mineral_deposit, name).limit(1).count() != 0:
+			if self.fetch_block_model(mineral_deposit, name).limit(1).count() != 0:
 				print("A block model with that name already exist within this mineral deposit.")
 				name = ""
 		self.db.block_models.insert_one({ "name": name, "mineral_deposit_name": mineral_deposit, "headers": headers })
@@ -37,7 +37,7 @@ class Manager():
 		return self.db.block_models.find({ "name": block_model, "mineral_deposit_name": mineral_deposit })
 
 	def insert_blocks(self, mineral_deposit, block_model, data_file):
-		model = fetch_block_model(self.db, mineral_deposit, block_model)
+		model = self.fetch_block_model(mineral_deposit, block_model)
 		headers = model["headers"]
 		amount_headers = len(headers)
 		data = parse_file(data_file)

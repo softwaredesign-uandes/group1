@@ -1,5 +1,6 @@
 from helpers.database_manager import Manager
 from helpers.arguments_manager import manage_arguments
+from helpers.container import Container
 
 
 def main(args):
