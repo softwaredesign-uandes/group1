@@ -29,7 +29,7 @@ class Manager():
 		name = ""
 		while name == "":
 			name = input("What would you like to name this block model?\n>>> ")
-			if self.fetch_block_model(mineral_deposit, name).limit(1).count() != 0:
+			if self.fetch_block_model(mineral_deposit, name) != None:
 				print("A block model with that name already exist within this mineral deposit.")
 				name = ""
 		self.db.block_models.insert_one({ "name": name, "mineral_deposit_name": mineral_deposit, "headers": headers, "data_map": data_map })
@@ -83,7 +83,7 @@ class Manager():
 		for header in relevant_headers:
 			print("{}: ".format(header), end = '')
 			response = self.get_valid_index(headers) - 1
-			data_map[header] = response
+			data_map[header] = headers[response]
 		return data_map
 
 	def get_valid_index(self, data):

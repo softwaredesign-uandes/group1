@@ -10,13 +10,12 @@ class BlockModel:
 
 	def add_blocks(self, block_cursor):
 		for element in block_cursor:
-			keys = list(element.keys())
 			model = element.pop("block_model", None)
-			x = element.pop(keys[self.data_map["x"]], None)
-			y = element.pop(keys[self.data_map["y"]], None)
-			z = element.pop(keys[self.data_map["z"]], None)
-			weight = element.pop(keys[self.data_map["weight"]], None)
-			grade = element.pop(keys[self.data_map["grade"]], None)
+			x = element.pop(self.data_map["x"], None)
+			y = element.pop(self.data_map["y"], None)
+			z = element.pop(self.data_map["z"], None)
+			weight = element.pop(self.data_map["weight"], None)
+			grade = element.pop(self.data_map["grade"], None)
 			new_block = Block(model, x, y, z, weight, grade, element)
 			self.blocks.append(new_block)
 
@@ -29,3 +28,8 @@ class BlockModel:
 			total_weight += block.weight
 		return total_weight
 
+	def get_total_mineral_weight(self):
+		total_mineral_weight = 0
+		for block in self.blocks:
+			total_mineral_weight += block.weight * block.grade
+		return total_mineral_weight
