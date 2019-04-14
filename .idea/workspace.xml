@@ -61,8 +61,8 @@
       <file leaf-file-name="block_model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classes/block_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="469">
-              <caret line="30" column="32" lean-forward="false" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="32" />
+            <state relative-caret-position="595">
+              <caret line="36" column="26" lean-forward="false" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -72,7 +72,7 @@
         <entry file="file://$PROJECT_DIR$/tests/test_block_model.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="721">
-              <caret line="38" column="0" lean-forward="true" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+              <caret line="53" column="0" lean-forward="true" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -391,8 +391,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/classes/block_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="30" column="32" lean-forward="false" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="32" />
+        <state relative-caret-position="595">
+          <caret line="36" column="26" lean-forward="false" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="26" />
           <folding />
         </state>
       </provider>
@@ -400,7 +400,7 @@
     <entry file="file://$PROJECT_DIR$/tests/test_block_model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="721">
-          <caret line="38" column="0" lean-forward="true" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+          <caret line="53" column="0" lean-forward="true" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

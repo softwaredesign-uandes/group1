@@ -19,14 +19,25 @@ class TestsBlockModel(unittest.TestCase):
                 "value": 135786.28,
                 "rock_tonnes": 62880,
                 "ore_tonnes": 0.25572519083969464
-        }]
+            }, {"_id": {"$oid": "5cb0f608b766f9aa245cb3f1"},
+                "mineral_deposit": "Zuck small",
+                "block_model": "v1",
+                "id": 9370,
+                "x": 20,
+                "y": 25,
+                "z": 0,
+                "cost": 56592,
+                "value": 115580.184,
+                "rock_tonnes": 0,
+                "ore_tonnes": 0
+                }]
         self.block_model.add_blocks(blocks)
 
 
 
     def test_count_blocks(self):
         number_of_blocks = self.block_model.count_blocks()
-        self.assertEquals(number_of_blocks, 1, "Count of blocks does not corresponds to the actual number ")
+        self.assertEquals(number_of_blocks, 2, "Count of blocks does not corresponds to the actual number ")
 
     def test_get_total_weight(self):
         total_weight = self.block_model.get_total_weight()
@@ -34,5 +45,9 @@ class TestsBlockModel(unittest.TestCase):
 
     def test_get_total_mineral_weight(self):
         mineral_weight = self.block_model.get_total_mineral_weight()
-        self.assertEquals(mineral_weight, 62880 * 0.25572519083969464 , "Total mineral weight of blocks is incorrect")
+        self.assertEquals(mineral_weight, 62880 * 0.25572519083969464 , "Total mineral weight of blocks in block model is incorrect")
+
+    def test_get_air_percentage(self):
+        air_percentage = self.block_model.get_air_percentage()
+        self.assertEquals(air_percentage, 0.5, "Air percentage of block model is incorrect")
 
