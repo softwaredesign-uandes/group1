@@ -38,6 +38,5 @@ class BlockModel:
 		air_blocks = 0
 		for block in self.blocks:
 			if block.weight == 0:
-				print('dfgb')
 				air_blocks += 1
 		return air_blocks / self.count_blocks()
