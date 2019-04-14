@@ -1,4 +1,5 @@
 from classes.block import Block
+from itertools import takewhile
 
 class BlockModel:
 	def __init__(self, name, mineral_deposit, headers, data_map):
@@ -18,6 +19,13 @@ class BlockModel:
 			grade = element.pop(self.data_map["grade"], None)
 			new_block = Block(model, x, y, z, weight, grade, element)
 			self.blocks.append(new_block)
+
+	def get_block_by_coordinates(self):
+		x = int(input("X: "))
+		y = int(input("Y: "))
+		z = int(input("Z: "))
+		result = list(takewhile(lambda block: block.x == x and block.y == y and block.z == z, self.blocks))
+		return result[0]
 
 	def count_blocks(self):
 		return len(self.blocks)

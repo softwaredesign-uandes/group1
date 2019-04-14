@@ -1,5 +1,6 @@
 from classes.mineral_deposit import MineralDeposit
 from classes.block_model import BlockModel
+from helpers.database_manager import Manager
 
 class  Container:
     def __init__(self):
@@ -18,12 +19,15 @@ class  Container:
         self.block_model.add_blocks(blocks)
 
     def interact_with_user(self):
-        metrics = ['Number of blocks', 'Total weight of the mineral deposit', 'Total mineral weight of the mineral deposit', 'Percentage of "Air" blocks']
+        # self.present_self()
+        metrics = ['Search by coordinates', 'Number of blocks', 'Total weight of the mineral deposit', 'Total mineral weight of the mineral deposit', 'Percentage of "Air" blocks']
         print("Choose a metric: ")
         for index in range(len(metrics)):
             print("\t{}: {}".format(index + 1, metrics[index]))
         response = int(input("\t")) - 1
-        if metrics[response] == "Number of blocks":
+        if metrics[response] == "Search by coordinates":
+            print(self.get_block_by_coordinates())
+        elif metrics[response] == "Number of blocks":
             print("This block model has {} blocks in it.".format(self.get_number_of_blocks()))
         elif metrics[response] == 'Total weight of the mineral deposit':
             print("The total weight of {} is {}.".format(self.mineral_deposit.name, self.get_total_weight_of_mineral_deposit()))
@@ -32,8 +36,16 @@ class  Container:
         elif metrics[response] == 'Percentage of "Air" blocks':
             print("The air blocks percentage of {} is {}.".format(self.mineral_deposit.name, self.get_air_blocks_percentage_of_mineral_deposit()))
 
+    def present_self(self):
+        print("Welcome to the mining block monitor system.")
+        if self.mineral_deposit is None:
+            db_manager = Manager()
+            mineral_deposit_name = input("It seems that you didn't provide a mineral deposit name.\nPlease indicate the name of the one would you like to use: ")
+            db_result = db_manager.fetch_mineral_deposit(mineral_deposit_name)
+            self.set_mineral_deposit(db_result)
 
-
+    def get_block_by_coordinates(self):
+        return self.block_model.get_block_by_coordinates()
 
     def get_number_of_blocks(self):
         return self.block_model.count_blocks()
