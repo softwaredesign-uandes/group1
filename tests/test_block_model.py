@@ -26,5 +26,6 @@ class TestsBlockModel(unittest.TestCase):
 
     def test_count_blocks(self):
         number_of_blocks = self.block_model.count_blocks()
-        self.assertEquals(number_of_blocks,1)
+        self.assertEquals(number_of_blocks, 1, "Count of blocks does not corresponds to the actual number ")
 
+    
