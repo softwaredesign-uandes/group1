@@ -28,4 +28,11 @@ class TestsBlockModel(unittest.TestCase):
         number_of_blocks = self.block_model.count_blocks()
         self.assertEquals(number_of_blocks, 1, "Count of blocks does not corresponds to the actual number ")
 
-    
+    def test_get_total_weight(self):
+        total_weight = self.block_model.get_total_weight()
+        self.assertEquals(total_weight, 62880, "Total weight of blocks is incorrect")
+
+    def test_get_total_mineral_weight(self):
+        mineral_weight = self.block_model.get_total_mineral_weight()
+        self.assertEquals(mineral_weight, 62880 * 0.25572519083969464 , "Total mineral weight of blocks is incorrect")
+
