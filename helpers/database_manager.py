@@ -11,14 +11,11 @@ class Manager():
 	    )
 		self.db = connection.mining_blocks
 
-	def insert_new_mineral_deposit(self):
-		name = ""
-		while name == "":
-			name = input("What would you like to name this mineral deposit?\n>>> ")
-			if self.fetch_mineral_deposit(name).limit(1).count() != 0:
-				print("A mineral deposit with that name already exist.")
-				name = ""
-		self.db.mineral_deposits.insert_one({ "name": name })
+	def insert_new_mineral_deposit(self, data_file):
+		data = data_file.strip().split(',').
+		name = data[0]
+		minerals = data[1:]
+		self.db.mineral_deposits.insert_one({ "name": name, "minerals": minerals })
 
 	def fetch_mineral_deposit(self, mineral_deposit):
 		return self.db.mineral_deposits.find_one({ "name": mineral_deposit })

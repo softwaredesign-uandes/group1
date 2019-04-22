@@ -6,9 +6,9 @@ from helpers.container import Container
 def main(args):
 	db_manager = Manager()
 	mike = Container()
-	if args.insert:
+	if args.insert and args.file_input:
 		if not args.mineral_deposit:
-			db_manager.insert_new_mineral_deposit()
+			db_manager.insert_new_mineral_deposit(args.file_input)
 		elif not args.block_model:
 			db_manager.insert_new_block_model(args.mineral_deposit, args.file_input)
 		else:
