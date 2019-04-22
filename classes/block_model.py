@@ -50,3 +50,6 @@ class BlockModel:
 			if block.weight == 0:
 				air_blocks += 1
 		return air_blocks / self.count_blocks()
+
+	def reblock(rx, ry, rz):
+		return True

@@ -32,4 +32,7 @@ class TestReblock(unittest.TestCase):
                 "ore_tonnes": 0	}]
 
 	def test_reblock(self):
+		rx = 3
+		ry = 3
+		rz = 3
 		self.assertEqual(BlockModel.reblock(rx, ry, rz), True)
