@@ -12,8 +12,8 @@ class TestReblock(unittest.TestCase):
 				"mineral_deposit": "Zuck small",
 				"block_model": "v1",
 				"id": 9369,
-				"x": 19,
-				"y": 25,
+				"x": 0,
+				"y": 0,
 				"z": 0,
 				"cost": 56592,
 				"value": 135786.28,
@@ -23,16 +23,45 @@ class TestReblock(unittest.TestCase):
 				"mineral_deposit": "Zuck small",
 				"block_model": "v1",
 				"id": 9370,
-				"x": 20,
-				"y": 25,
+				"x": 1,
+				"y": 0,
  				"z": 0,
 				"cost": 56592,
 				"value": 115580.184,
 				"rock_tonnes": 0,
-                "ore_tonnes": 0	}]
+				"ore_tonnes": 0	},
+				{"_id": {"$oid": "5cb0f608b766f9aa245cb3f1"},
+				"mineral_deposit": "Zuck small",
+				"block_model": "v1",
+				"id": 9370,
+				"x": 0,
+				"y": 1,
+ 				"z": 0,
+				"cost": 56592,
+				"value": 115580.184,
+				"rock_tonnes": 0,
+				"ore_tonnes": 0	},
+				{"_id": {"$oid": "5cb0f608b766f9aa245cb3f1"},
+				"mineral_deposit": "Zuck small",
+				"block_model": "v1",
+				"id": 9370,
+				"x": 1,
+				"y": 1,
+ 				"z": 0,
+				"cost": 56592,
+				"value": 115580.184,
+				"rock_tonnes": 0,
+				"ore_tonnes": 0	}]
+		self.block_model = BlockModel(name, mineral_deposit, headers, data_map)
+		self.block_model.add_blocks(blocks)
+		self.rx = 2
+		self.ry = 2
+		self.rz = 0
 
 	def test_reblock(self):
-		rx = 3
-		ry = 3
-		rz = 3
-		self.assertEqual(BlockModel.reblock(rx, ry, rz), True)
+		self.assertEqual(self.block_model.reblock(self.rx, self.ry, self.rz), True)
+
+	def test_change_block_quantity(self):
+		self.block_model.reblock(self.rx, self.ry, self.rz)
+		new_blocks = self.block_model.count_blocks()
+		self.assertEqual(new_blocks,1)

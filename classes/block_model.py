@@ -51,5 +51,5 @@ class BlockModel:
 				air_blocks += 1
 		return air_blocks / self.count_blocks()
 
-	def reblock(rx, ry, rz):
+	def reblock(self, rx, ry, rz):
 		return True
