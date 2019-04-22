@@ -35,10 +35,8 @@ class TestsBlockModel(unittest.TestCase):
         self.block_model.add_blocks(blocks)
 
     def test_get_block_by_coordinates(self):
-        user_input = ['19', '25', '0']
         expected_result = self.block_model.blocks[0]
-        with patch('builtins.input', side_effect=user_input):
-            block = self.block_model.get_block_by_coordinates()
+        block = self.block_model.get_block_by_coordinates(19, 25, 0)
         self.assertEqual(block, expected_result, "The returned block doesn't match the coordinates")
 
     def test_count_blocks(self):
