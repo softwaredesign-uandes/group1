@@ -20,10 +20,7 @@ class BlockModel:
 			new_block = Block(model, x, y, z, weight, grade, element)
 			self.blocks.append(new_block)
 
-	def get_block_by_coordinates(self):
-		x = int(input("X: "))
-		y = int(input("Y: "))
-		z = int(input("Z: "))
+	def get_block_by_coordinates(self,x, y, z):
 		result = list(takewhile(lambda block: block.x == x and block.y == y and block.z == z, self.blocks))
 		return result[0]
 
