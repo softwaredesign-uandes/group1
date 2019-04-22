@@ -7,7 +7,7 @@ class TestsBlockModel(unittest.TestCase):
         name = "v1"
         mineral_deposit = "Zuck small"
         headers =  ["id", "x", "y", "z", "cost", "value", "rock_tonnes", "ore_tonnes"]
-        data_map = {"x": "x", "y": "y", "z": "z", "weight": "rock_tonnes", "grade": "ore_tonnes"}
+        data_map = {"x": "x", "y": "y", "z": "z", "weight": "rock_tonnes", "grade": {"Au":"ore_tonnes"}}
         self.block_model = BlockModel(name, mineral_deposit, headers, data_map)
         blocks = [{"_id": {"$oid": "5cb0f608b766f9aa245cb3f0"},
                 "mineral_deposit": "Zuck small",

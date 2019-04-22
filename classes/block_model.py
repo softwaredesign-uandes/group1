@@ -16,8 +16,12 @@ class BlockModel:
 			y = element.pop(self.data_map["y"], None)
 			z = element.pop(self.data_map["z"], None)
 			weight = element.pop(self.data_map["weight"], None)
-			grade = element.pop(self.data_map["grade"], None)
-			new_block = Block(model, x, y, z, weight, grade, element)
+			grades =self.data_map["grade"].values()
+			grades_values = []
+			for grade in grades:
+				mineral_grade = element.pop(grade, None)
+				grades_values.append(mineral_grade)
+			new_block = Block(model, x, y, z, weight, grades_values, element)
 			self.blocks.append(new_block)
 
 	def get_block_by_coordinates(self,x, y, z):
@@ -36,7 +40,8 @@ class BlockModel:
 	def get_total_mineral_weight(self):
 		total_mineral_weight = 0
 		for block in self.blocks:
-			total_mineral_weight += block.weight * block.grade
+			for grade in block.grade_values:
+				total_mineral_weight += block.weight * grade
 		return total_mineral_weight
 
 	def get_air_percentage(self):

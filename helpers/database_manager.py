@@ -59,7 +59,6 @@ class Manager():
 			document = { "mineral_deposit": mineral_deposit, "block_model": block_model }
 			for index in range(amount_headers):
 				if headers[index] in grades_data_map.values():
-					print (item[index], item[weight_column_index], grade_units[my_units[headers[index]]])
 					transformed = self.grade_to_percentage(item[index], item[weight_column_index], grade_units[my_units[headers[index]]])
 					item[index] = transformed
 				document[headers[index]] = item[index]
