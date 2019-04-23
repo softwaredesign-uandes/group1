@@ -28,7 +28,7 @@ class TestReblock(unittest.TestCase):
  				"z": 0,
 				"cost": 56592,
 				"value": 115580.184,
-				"rock_tonnes": 0,
+				"rock_tonnes": 1,
 				"ore_tonnes": 0	},
 				{"_id": {"$oid": "5cb0f608b766f9aa245cb3f1"},
 				"mineral_deposit": "Zuck small",
@@ -52,11 +52,11 @@ class TestReblock(unittest.TestCase):
 				"value": 115580.184,
 				"rock_tonnes": 0,
 				"ore_tonnes": 0	}]
-		self.block_model = BlockModel(name, mineral_deposit, headers, data_map)
+		self.block_model = BlockModel(name, mineral_deposit, headers, data_map, 1, 1, 0)
 		self.block_model.add_blocks(blocks)
 		self.rx = 2
 		self.ry = 2
-		self.rz = 0
+		self.rz = 1
 
 	def test_reblock(self):
 		self.assertEqual(self.block_model.reblock(self.rx, self.ry, self.rz), True)
@@ -64,4 +64,15 @@ class TestReblock(unittest.TestCase):
 	def test_change_block_quantity(self):
 		self.block_model.reblock(self.rx, self.ry, self.rz)
 		new_blocks = self.block_model.count_blocks()
+		print (self.block_model.blocks[0])
 		self.assertEqual(new_blocks,1)
+
+	def test_new_weight(self):
+		old_blocks_weight = self.block_model.get_total_weight()
+		self.block_model.reblock(self.rx, self.ry, self.rz)
+		new_blocks_weight = self.block_model.get_total_weight()
+		self.assertEqual(old_blocks_weight, new_blocks_weight)
+
+	
+
+

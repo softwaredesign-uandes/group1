@@ -1,4 +1,5 @@
 from classes.block import Block
+import numpy as np
 from itertools import takewhile
 
 class BlockModel:
@@ -13,7 +14,7 @@ class BlockModel:
 		self.max_z = max_z
 
 	def add_blocks(self, block_cursor):
-		for element in block_cursor[:40]:
+		for element in block_cursor:
 			model = element.pop("block_model", None)
 			x = element.pop(self.data_map["x"], None)
 			y = element.pop(self.data_map["y"], None)
@@ -28,8 +29,8 @@ class BlockModel:
 			self.blocks.append(new_block)
 
 	def get_block_by_coordinates(self,x, y, z):
-		result = list(takewhile(lambda block: block.x == x and block.y == y and block.z == z, self.blocks))
-		return result[0]
+		result = next((block for block in self.blocks if block.x == x and block.y == y and block.z == z), None)
+		return result
 
 	def count_blocks(self):
 		return len(self.blocks)
@@ -58,18 +59,24 @@ class BlockModel:
 		new_blocks = []
 		amount_blocks = rx * ry * rz
 		x_step, y_step, z_step = 0, 0, 0
-		new_total_weight = 0
-		new_x = 
-		new_y = 
-		new_z = 
-		for x in range(x_step, x_step + rx):
-			for y in range(y_step, y_step + ry):
-				for z in range(z_step, z_step + rz):
-					new_total_weight += 
-		x_step += rx
-		y_step += ry
-		z_step += rz
-
-
-
+		new_x, new_y, new_z = 0, 0, 0
+		for old_x in range(0, self.max_x+1, rx):
+			for old_y in range(0, self.max_y+1, ry):
+				for old_z in range(0, self.max_z+1, rz):
+					new_data = self.get_block_by_coordinates(old_x, old_y, old_z).data
+					new_total_weight = 0
+					new_grade_values = np.zeros(len(self.data_map['grade']))
+					for x in range(old_x, min(old_x + rx, self.max_x+1)):
+						for y in range(old_y, min(old_y + ry, self.max_y+1)):
+							for z in range(old_z, min(old_z + rz, self.max_z+1)):
+								print( x, y, z)
+								current_block = self.get_block_by_coordinates(x, y, z)
+								new_total_weight += current_block.weight
+								new_grade_values += (np.array(current_block.grade_values) * current_block.weight)
+					new_grade_values /= new_total_weight
+					new_blocks.append(Block(self.name, new_x, new_y, new_z, new_total_weight, new_grade_values, new_data))
+					new_z +=1
+				new_y += 1
+			new_x += 1
+		self.blocks = new_blocks
 		return True
