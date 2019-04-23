@@ -15,7 +15,8 @@ class  Container:
         mineral_deposit = block_model['mineral_deposit_name']
         headers = block_model['headers']
         data_map = block_model['data_map']
-        self.block_model = BlockModel(name, mineral_deposit, headers, data_map)
+        max_x, max_y, max_z = Manager.get_max_x_y_z_value(mineral_deposit, name)
+        self.block_model = BlockModel(name, mineral_deposit, headers, data_map, max_x, max_y, max_z)
         self.block_model.add_blocks(blocks)
 
     def interact_with_user(self):

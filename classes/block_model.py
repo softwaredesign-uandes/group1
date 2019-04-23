@@ -2,12 +2,15 @@ from classes.block import Block
 from itertools import takewhile
 
 class BlockModel:
-	def __init__(self, name, mineral_deposit, headers, data_map):
+	def __init__(self, name, mineral_deposit, headers, data_map, max_x, max_y, max_z):
 		self.name = name
 		self.mineral_deposit = mineral_deposit
 		self.headers = headers
 		self.data_map = data_map
 		self.blocks = []
+		self.max_x = max_x
+		self.max_y = max_y
+		self.max_z = max_z
 
 	def add_blocks(self, block_cursor):
 		for element in block_cursor:
