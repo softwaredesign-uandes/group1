@@ -52,4 +52,21 @@ class BlockModel:
 		return air_blocks / self.count_blocks()
 
 	def reblock(self, rx, ry, rz):
+		new_blocks = []
+		amount_blocks = rx * ry * rz
+		x_step, y_step, z_step = 0, 0, 0
+		new_total_weight = 0
+		new_x = 
+		new_y = 
+		new_z = 
+		for x in range(x_step, x_step + rx):
+			for y in range(y_step, y_step + ry):
+				for z in range(z_step, z_step + rz):
+					new_total_weight += 
+		x_step += rx
+		y_step += ry
+		z_step += rz
+
+
+
 		return True
