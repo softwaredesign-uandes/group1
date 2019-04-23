@@ -122,7 +122,7 @@ class Manager():
 		x = block_model["data_map"]["x"]
 		y = block_model["data_map"]["y"]
 		z = block_model["data_map"]["z"]
-		block_max_x = self.db.blocks.find().sort({x: -1}).limit(1)
-		block_max_y = self.db.blocks.find().sort({y: -1}).limit(1)
-		block_max_z = self.db.blocks.find().sort({z: -1}).limit(1)
-		return block_max_x[x], block_max_y[y], block_max_z[z]
+		block_max_x = self.db.blocks.find({}).sort([(x, -1)]).limit(1)
+		block_max_y = self.db.blocks.find({}).sort([(y, -1)]).limit(1)
+		block_max_z = self.db.blocks.find({}).sort([(z, -1)]).limit(1)
+		return block_max_x.next()[x], block_max_y.next()[y], block_max_z.next()[z]

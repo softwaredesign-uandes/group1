@@ -13,7 +13,7 @@ class BlockModel:
 		self.max_z = max_z
 
 	def add_blocks(self, block_cursor):
-		for element in block_cursor:
+		for element in block_cursor[:40]:
 			model = element.pop("block_model", None)
 			x = element.pop(self.data_map["x"], None)
 			y = element.pop(self.data_map["y"], None)
