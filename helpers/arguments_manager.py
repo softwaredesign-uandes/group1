@@ -17,10 +17,11 @@ def manage_arguments():
 	action.add_argument("-i", "--insert", help="Indicates that you want to insert data into the database", action="store_true")
 	action.add_argument("-s", "--search", help="Indicates that you want to search for specific block within the given block model", action="store_true")
 	action.add_argument("-r", "--remove", help="Indicates that you want to remove all blocks belonging to the provided block model", action="store_true")
+	action.add_argument("-m", "--metrics", help="Indicates that you want to fetch and analyse data from a given mineral deposit and block model", action="store_true")
 
 	# Directory of the file containing the data to be uploaded to the server
 	file_input = parser.add_argument_group("file_input")
-	file_input.add_argument("-f", "--file", help="Directory of the file containing the data to be uploaded to the server")
+	file_input.add_argument("-f", "--file_input", help="Directory of the file containing the data to be uploaded to the server")
 	
 	# Coordinates X, Y and Z of the desired block to be queried within the given block model
 	coordinates = parser.add_argument_group("coordinates")

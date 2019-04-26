@@ -3,9 +3,13 @@ def parse_file(file):
 	file = open(file, "r")
 	for row in file:
 		raw_data = row.strip().split()
-		indicators = [int(x) for x in raw_data[:4]]
-		tail = [float(x) for x in raw_data[4:]]
-		block_objects.append(indicators + tail)
+		for index in range(len(raw_data)):
+			try:
+				float_value = float(raw_data[index])
+				raw_data[index] = float_value
+			except:
+				continue
+		block_objects.append(raw_data)
 	return block_objects
 
 
