@@ -11,28 +11,27 @@ class Manager():
 	    )
 		self.db = connection.mining_blocks
 
-	def insert_new_mineral_deposit(self):
-		name = ""
-		while name == "":
-			name = input("What would you like to name this mineral deposit?\n>>> ")
-			if self.fetch_mineral_deposit(name).limit(1).count() != 0:
-				print("A mineral deposit with that name already exist.")
-				name = ""
-		self.db.mineral_deposits.insert_one({ "name": name })
+	def insert_new_mineral_deposit(self, data_file):
+		file = open(data_file)
+		data = file.readline().strip().split(',')
+		name = data[0]
+		minerals = data[1:]
+		self.db.mineral_deposits.insert_one({ "name": name, "minerals": minerals })
 
 	def fetch_mineral_deposit(self, mineral_deposit):
 		return self.db.mineral_deposits.find_one({ "name": mineral_deposit })
 
-	def insert_new_block_model(self, mineral_deposit, headers_file):
+	def insert_new_block_model(self, mineral_deposit_name, headers_file):
 		headers = parse_headers(headers_file)
-		data_map = self.map_headers(headers)
+		mineral_deposit = self.fetch_mineral_deposit(mineral_deposit_name)
+		data_map = self.map_headers(headers, mineral_deposit["minerals"])
 		name = ""
 		while name == "":
 			name = input("What would you like to name this block model?\n>>> ")
-			if self.fetch_block_model(mineral_deposit, name).limit(1).count() != 0:
+			if self.fetch_block_model(mineral_deposit_name, name) != None:
 				print("A block model with that name already exist within this mineral deposit.")
 				name = ""
-		self.db.block_models.insert_one({ "name": name, "mineral_deposit_name": mineral_deposit, "headers": headers, "data_map": data_map })
+		self.db.block_models.insert_one({ "name": name, "mineral_deposit_name": mineral_deposit_name, "headers": headers, "data_map": data_map })
 
 	def fetch_block_model(self, mineral_deposit, block_model):
 		return self.db.block_models.find_one({ "name": block_model, "mineral_deposit_name": mineral_deposit })
@@ -43,20 +42,24 @@ class Manager():
 		amount_headers = len(headers)
 		data = parse_file(data_file)
 		data_map = model["data_map"]
-		weight_column_index = data_map["weight"]
-		grade_column_index = data_map["grade"]
+		weight_column = data_map["weight"]
+		weight_column_index = headers.index(weight_column)
+		grades_data_map = data_map["grade"]
 		data_array = []
+		my_units = {}
 		grade_units = ['tonn', 'percentage', 'oz/tonn', 'ppm']
-		print("In which of the following units is your grade:")
+		print("In which of the following units is each of the grades:")
 		for index in range(len(grade_units)):
 			print("\t{}. {}".format(index + 1, grade_units[index]))
-		unit_index = self.get_valid_index(grade_units) - 1
-		my_unit = grade_units[unit_index]
+		for grade in grades_data_map:
+			print("{}: ".format(grade), end = '')
+			unit_index = self.get_valid_index(grade_units) - 1
+			my_units[grades_data_map[grade]] = unit_index
 		for item in data:
 			document = { "mineral_deposit": mineral_deposit, "block_model": block_model }
 			for index in range(amount_headers):
-				if index == grade_column_index:
-					transformed = self.grade_to_percentage(item[index], item[weight_column_index], my_unit)
+				if headers[index] in grades_data_map.values():
+					transformed = self.grade_to_percentage(item[index], item[weight_column_index], grade_units[my_units[headers[index]]])
 					item[index] = transformed
 				document[headers[index]] = item[index]
 			data_array.append(document)
@@ -73,17 +76,22 @@ class Manager():
 	def remove_all_blocks_from_block_model(self, mineral_deposit, block_model):
 		return self.db.blocks.remove({ "mineral_deposit_name": mineral_deposit, "block_model": block_model })
 
-	def map_headers(self, headers):
+	def map_headers(self, headers, minerals):
 		data_map = {}
 		print("You have entered the following headers for your block model:")
 		for index in range(len(headers)):
 			print("\t{}. {}".format(index + 1, headers[index]))
 		print("Please tell me, which one of those hearders refers to:")
-		relevant_headers = ['x', 'y', 'z', 'weight', 'grade']
+		relevant_headers = ['x', 'y', 'z', 'weight']
 		for header in relevant_headers:
 			print("{}: ".format(header), end = '')
 			response = self.get_valid_index(headers) - 1
-			data_map[header] = response
+			data_map[header] = headers[response]
+		data_map["grade"] = {}
+		for mineral in minerals:
+			print("{} grade: ".format(mineral), end = '')
+			response = self.get_valid_index(headers) - 1
+			data_map["grade"][mineral] = headers[response]
 		return data_map
 
 	def get_valid_index(self, data):
@@ -105,4 +113,6 @@ class Manager():
 			return value * 32000 / weight
 		elif unit == 'ppm':
 			return value / 10000
+		else:
+			return value
 				
