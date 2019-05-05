@@ -1,6 +1,6 @@
 from classes.block import Block
 import numpy as np
-from itertools import takewhile, product
+from itertools import repeat, product
 
 class BlockModel:
 	def __init__(self, name, mineral_deposit, headers, data_map, max_x, max_y, max_z):
@@ -62,35 +62,40 @@ class BlockModel:
 		return True
 
 	def run_through_all_blocks_to_reblock(self, rx, ry, rz):
+		def create_block(old_coordinates, new_dimensions):
+			new_x = old_coordinates[0] // new_dimensions[0]
+			new_y = old_coordinates[1] // new_dimensions[1]
+			new_z = old_coordinates[2] // new_dimensions[2]
+			new_weight, new_grade_values = self.collect_blocks_information(old_coordinates, new_dimensions)
+			new_blocks.append(Block(self.name, new_x, new_y, new_z, new_weight, new_grade_values, data=None))
 		new_blocks = []
 		new_x, new_y, new_z = 0, 0, 0
-
-		range_x , range_y, range_z= get_range_x_y_z(self, rx, ry, rz)
-
-		for old_x, old_y, old_z in product(range_x, range_y, range_z):
-					new_x, new_y, new_z = old_x//rx, old_y//ry, old_z//rz
-
-					new_weight, new_grade_values = self.collect_blocks_information(old_x, old_y, old_z, rx, ry, rz)
-					new_block = Block(self.name, new_x, new_y, new_z, new_weight, new_grade_values, data=None)
-					new_blocks.append(new_block)
+		range_x, range_y, range_z = get_range_x_y_z(self, rx, ry, rz)
+		new_dimensions = rx, ry, rz
+		list(map(create_block, product(range_x, range_y, range_z), repeat(new_dimensions)))
 		set_new_max_coordinates(self, new_x, new_y, new_z)
 		return new_blocks
 
-	def collect_blocks_information(self, old_x, old_y, old_z, rx, ry, rz):
-		new_total_weight = 0
-		new_grade_values = np.zeros(len(self.data_map['grade']))
+	def collect_blocks_information(self, old_coordinates, new_dimensions):
+		def analyse_block(coordinates, info_dict):
+			current_block = self.get_block_by_coordinates(coordinates[0], coordinates[1], coordinates[2])
+			if current_block is not None:
+				info_dict["new_total_weight"] += current_block.weight
+				info_dict["new_grade_values"] += (np.array(current_block.grade_values) * current_block.weight)
 
+		old_x, old_y, old_z = old_coordinates
+		rx, ry, rz = new_dimensions
+		information = {
+			"new_total_weight": 0,
+			"new_grade_values": np.zeros(len(self.data_map['grade']))
+		}
 		range_x = range(old_x, min(old_x + rx, self.max_x + 1))
 		range_y = range(old_y, min(old_y + ry, self.max_y + 1))
 		range_z = range(old_z, min(old_z + rz, self.max_z + 1))
-		for x, y, z in product(range_x, range_y, range_z):
-				current_block = self.get_block_by_coordinates(x, y, z)
-				if current_block is not None:
-					new_total_weight += current_block.weight
-					new_grade_values += (np.array(current_block.grade_values) * current_block.weight)
-		if new_total_weight != 0:
-			new_grade_values /= new_total_weight
-		return new_total_weight, new_grade_values
+		list(map(analyse_block, product(range_x, range_y, range_z), repeat(information)))
+		if information["new_total_weight"] != 0:
+			information["new_grade_values"] /= information["new_total_weight"]
+		return information["new_total_weight"], information["new_grade_values"]
 
 
 def set_new_max_coordinates(self, new_x, new_y, new_z):
@@ -98,9 +103,9 @@ def set_new_max_coordinates(self, new_x, new_y, new_z):
 	self.max_y = new_y
 	self.max_z = new_z
 
+
 def get_range_x_y_z(self, rx, ry, rz):
 	range_x = range(0, self.max_x + 1 if self.max_x > 0 else 1, rx)
 	range_y = range(0, self.max_y + 1 if self.max_y > 0 else 1, ry)
 	range_z = range(0, self.max_z + 1 if self.max_z > 0 else 1, rz)
-
 	return range_x, range_y, range_z
