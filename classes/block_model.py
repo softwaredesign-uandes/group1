@@ -64,10 +64,9 @@ class BlockModel:
 	def run_through_all_blocks_to_reblock(self, rx, ry, rz):
 		new_blocks = []
 		new_x, new_y, new_z = 0, 0, 0
-
-		for old_x in range(0, self.max_x + 1, rx):
-			for old_y in range(0, self.max_y + 1, ry):
-				for old_z in range(0, self.max_z + 1, rz):
+		for old_x in range(0, self.max_x if self.max_x < 0 else 1, rx):
+			for old_y in range(0, self.max_y if self.max_y < 0 else 1, ry):
+				for old_z in range(0, self.max_z if self.max_z < 0 else 1, rz):
 					self.generate_new_reblocked_block(new_blocks, old_x, old_y, old_z, rx, ry, rz, new_x, new_y, new_z)
 					new_z += 1
 				new_y += 1
