@@ -70,7 +70,7 @@ class TestReblock(unittest.TestCase):
 		self.ry = 2
 		self.rz = 1
 
-
+"""
 
 
 
@@ -95,3 +95,4 @@ class TestReblock(unittest.TestCase):
 		new_mineral_weight = self.block_model.get_total_mineral_weight()
 		self.assertEqual(old_mineral_weight, new_mineral_weight)
 
+"""

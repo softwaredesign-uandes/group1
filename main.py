@@ -24,9 +24,6 @@ def main(args):
 				blocks = db_manager.get_all_blocks_from_block_model(args.mineral_deposit, args.block_model)
 				manager.set_block_model(block_model, blocks)
 		manager.interact_with_user()
-	else:
-		block = db_manager.find_by_coordinates(args.mineral_deposit, args.block_model, args.coordinates)
-		print(block.next())
 
 if __name__ == "__main__":
 	args = manage_arguments()

@@ -11,4 +11,4 @@ class Block:
 		self.data = data
 
 	def __str__(self):
-		return "{}\nX: {}\tY: {}\tZ: {}\nWeight: {}\tGrade: {}".format(self.model.upper(), self.x, self.y, self.z, self.weight, self.grade_values)
+		return "{}\nX: {}\tY: {}\tZ: {}\nWeight: {}\tGrade: {}\t Data: {}".format(self.model.upper(), self.x, self.y, self.z, self.weight, self.grade_values, self.data)
