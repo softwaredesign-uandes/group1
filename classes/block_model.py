@@ -1,6 +1,6 @@
 from classes.block import Block
 import numpy as np
-from itertools import takewhile
+from itertools import takewhile, product
 
 class BlockModel:
 	def __init__(self, name, mineral_deposit, headers, data_map, max_x, max_y, max_z):
@@ -76,13 +76,15 @@ class BlockModel:
 	def collect_blocks_information(self, old_x, old_y, old_z, rx, ry, rz):
 		new_total_weight = 0
 		new_grade_values = np.zeros(len(self.data_map['grade']))
-		for x in range(old_x, min(old_x + rx, self.max_x + 1)):
-			for y in range(old_y, min(old_y + ry, self.max_y + 1)):
-				for z in range(old_z, min(old_z + rz, self.max_z + 1)):
-					current_block = self.get_block_by_coordinates(x, y, z)
-					if current_block is not None:
-						new_total_weight += current_block.weight
-						new_grade_values += (np.array(current_block.grade_values) * current_block.weight)
+
+		range_x = range(old_x, min(old_x + rx, self.max_x + 1))
+		range_y = range(old_y, min(old_y + ry, self.max_y + 1))
+		range_z = range(old_z, min(old_z + rz, self.max_z + 1))
+		for x, y, z in product(range_x, range_y, range_z):
+				current_block = self.get_block_by_coordinates(x, y, z)
+				if current_block is not None:
+					new_total_weight += current_block.weight
+					new_grade_values += (np.array(current_block.grade_values) * current_block.weight)
 		if new_total_weight != 0:
 			new_grade_values /= new_total_weight
 		return new_total_weight, new_grade_values
