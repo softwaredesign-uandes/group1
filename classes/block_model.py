@@ -64,20 +64,17 @@ class BlockModel:
 	def run_through_all_blocks_to_reblock(self, rx, ry, rz):
 		new_blocks = []
 		new_x, new_y, new_z = 0, 0, 0
-		for old_x in range(0, self.max_x if self.max_x < 0 else 1, rx):
-			for old_y in range(0, self.max_y if self.max_y < 0 else 1, ry):
-				for old_z in range(0, self.max_z if self.max_z < 0 else 1, rz):
-					self.generate_new_reblocked_block(new_blocks, old_x, old_y, old_z, rx, ry, rz, new_x, new_y, new_z)
-					new_z += 1
-				new_y += 1
-			new_x += 1
+		for new_x, old_x in enumerate(range(0, self.max_x if self.max_x > 0 else 1, rx)):
+			for new_y, old_y in enumerate(range(0, self.max_y if self.max_y > 0 else 1, ry)):
+				for new_z, old_z in enumerate(range(0, self.max_z if self.max_z > 0 else 1, rz)):
+					new_weight, new_grade_values = self.collect_blocks_information(old_x, old_y, old_z, rx, ry, rz)
+					new_block = Block(self.name, new_x, new_y, new_z, new_weight, new_grade_values, data=None)
+					new_blocks.append(new_block)
+		set_new_max_coordinates(self, new_x, new_y, new_z)
 		return new_blocks
 
-	def generate_new_reblocked_block(self, new_blocks, old_x, old_y, old_z, rx, ry, rz, new_x, new_y, new_z):
-		print(old_x,old_y,old_z)
-		new_data = self.get_block_by_coordinates(old_x, old_y, old_z)
-		if new_data is not None:
-			new_data = new_data.data
+	def collect_blocks_information(self, old_x, old_y, old_z, rx, ry, rz):
+		print(old_x, old_y, old_z)
 		new_total_weight = 0
 		new_grade_values = np.zeros(len(self.data_map['grade']))
 		for x in range(old_x, min(old_x + rx, self.max_x + 1)):
@@ -87,11 +84,9 @@ class BlockModel:
 					if current_block is not None:
 						new_total_weight += current_block.weight
 						new_grade_values += (np.array(current_block.grade_values) * current_block.weight)
-		if new_total_weight!=0:
+		if new_total_weight != 0:
 			new_grade_values /= new_total_weight
-		new_blocks.append(Block(self.name, new_x, new_y, new_z, new_total_weight, new_grade_values, new_data))
-		set_new_max_coordinates(self, new_x, new_y, new_z)
-
+		return new_total_weight, new_grade_values
 
 
 def set_new_max_coordinates(self, new_x, new_y, new_z):
