@@ -64,9 +64,12 @@ class BlockModel:
 	def run_through_all_blocks_to_reblock(self, rx, ry, rz):
 		new_blocks = []
 		new_x, new_y, new_z = 0, 0, 0
-		for new_x, old_x in enumerate(range(0, self.max_x + 1 if self.max_x > 0 else 1, rx)):
-			for new_y, old_y in enumerate(range(0, self.max_y + 1 if self.max_y > 0 else 1, ry)):
-				for new_z, old_z in enumerate(range(0, self.max_z + 1 if self.max_z > 0 else 1, rz)):
+
+		range_x , range_y, range_z= get_range_x_y_z(self, rx, ry, rz)
+
+		for old_x, old_y, old_z in product(range_x, range_y, range_z):
+					new_x, new_y, new_z = old_x//rx, old_y//ry, old_z//rz
+
 					new_weight, new_grade_values = self.collect_blocks_information(old_x, old_y, old_z, rx, ry, rz)
 					new_block = Block(self.name, new_x, new_y, new_z, new_weight, new_grade_values, data=None)
 					new_blocks.append(new_block)
@@ -94,3 +97,10 @@ def set_new_max_coordinates(self, new_x, new_y, new_z):
 	self.max_x = new_x
 	self.max_y = new_y
 	self.max_z = new_z
+
+def get_range_x_y_z(self, rx, ry, rz):
+	range_x = range(0, self.max_x + 1 if self.max_x > 0 else 1, rx)
+	range_y = range(0, self.max_y + 1 if self.max_y > 0 else 1, ry)
+	range_z = range(0, self.max_z + 1 if self.max_z > 0 else 1, rz)
+
+	return range_x, range_y, range_z
