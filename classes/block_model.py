@@ -56,27 +56,32 @@ class BlockModel:
 		return air_blocks / self.count_blocks()
 
 	def reblock(self, rx, ry, rz):
+		new_blocks = run_through_all_blocks_to_reblock(rx, ry, rz)
+		self.blocks = new_blocks
+		# change maximum x, y, z at the end of the reblocking
+		return True
+
+	def run_through_all_blocks_to_reblock(self, rx, ry, rz):
 		new_blocks = []
-		amount_blocks = rx * ry * rz
-		x_step, y_step, z_step = 0, 0, 0
 		new_x, new_y, new_z = 0, 0, 0
-		for old_x in range(0, self.max_x+1, rx):
-			for old_y in range(0, self.max_y+1, ry):
-				for old_z in range(0, self.max_z+1, rz):
-					new_data = self.get_block_by_coordinates(old_x, old_y, old_z).data
-					new_total_weight = 0
-					new_grade_values = np.zeros(len(self.data_map['grade']))
-					for x in range(old_x, min(old_x + rx, self.max_x+1)):
-						for y in range(old_y, min(old_y + ry, self.max_y+1)):
-							for z in range(old_z, min(old_z + rz, self.max_z+1)):
-								print( x, y, z)
-								current_block = self.get_block_by_coordinates(x, y, z)
-								new_total_weight += current_block.weight
-								new_grade_values += (np.array(current_block.grade_values) * current_block.weight)
-					new_grade_values /= new_total_weight
-					new_blocks.append(Block(self.name, new_x, new_y, new_z, new_total_weight, new_grade_values, new_data))
-					new_z +=1
+		for old_x in range(0, self.max_x + 1, rx):
+			for old_y in range(0, self.max_y + 1, ry):
+				for old_z in range(0, self.max_z + 1, rz):
+					generate_new_reblocked_block(new_blocks, old_x, old_y, old_z, rx, ry, rz, new_x, new_y, new_z)
+					new_z += 1
 				new_y += 1
 			new_x += 1
-		self.blocks = new_blocks
-		return True
+		return new_blocks
+
+	def generate_new_reblocked_block(self, new_blocks, old_x, old_y, old_z, rx, ry, rz, new_x, new_y, new_z):
+		new_data = self.get_block_by_coordinates(old_x, old_y, old_z).data
+		new_total_weight = 0
+		new_grade_values = np.zeros(len(self.data_map['grade']))
+		for x in range(old_x, min(old_x + rx, self.max_x + 1)):
+			for y in range(old_y, min(old_y + ry, self.max_y + 1)):
+				for z in range(old_z, min(old_z + rz, self.max_z + 1)):
+					current_block = self.get_block_by_coordinates(x, y, z)
+					new_total_weight += current_block.weight
+					new_grade_values += (np.array(current_block.grade_values) * current_block.weight)
+		new_grade_values /= new_total_weight
+		new_blocks.append(Block(self.name, new_x, new_y, new_z, new_total_weight, new_grade_values, new_data))
