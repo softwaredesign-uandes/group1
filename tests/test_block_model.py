@@ -34,6 +34,32 @@ class TestsBlockModel(unittest.TestCase):
                 }]
         self.block_model.add_blocks(blocks)
 
+        self.block_model_1 = BlockModel(name, mineral_deposit, headers, data_map, 19, 25, 0)
+        blocks = [{"_id": {"$oid": "5cb0f608b766f9aa245cb3f0"},
+                   "mineral_deposit": "Zuck small",
+                   "block_model": "v1",
+                   "id": 9369,
+                   "x": 19,
+                   "y": 25,
+                   "z": 0,
+                   "cost": 56592,
+                   "value": 135786.28,
+                   "rock_tonnes": 0,
+                   "ore_tonnes": 0
+                   }, {"_id": {"$oid": "5cb0f608b766f9aa245cb3f1"},
+                       "mineral_deposit": "Zuck small",
+                       "block_model": "v1",
+                       "id": 9370,
+                       "x": 0,
+                       "y": 1,
+                       "z": 0,
+                       "cost": 56592,
+                       "value": 115580.184,
+                       "rock_tonnes": 0,
+                       "ore_tonnes": 0
+                       }]
+        self.block_model_1.add_blocks(blocks)
+
     def test_get_block_by_coordinates(self):
         expected_result = self.block_model.blocks[1]
         block = self.block_model.get_block_by_coordinates(0, 1, 0)
@@ -54,4 +80,26 @@ class TestsBlockModel(unittest.TestCase):
     def test_get_air_percentage(self):
         air_percentage = self.block_model.get_air_percentage()
         self.assertEqual(air_percentage, 0.5, "Air percentage of block model is incorrect")
+
+    def test_get_total_weight_of_border_case(self):
+        total_weight = self.block_model_1.get_total_weight()
+        self.assertEqual(total_weight, 0, "Total weight of blocks is incorrect")
+
+    def test_get_total_mineral_weight_of_border_case(self):
+        mineral_weight = self.block_model_1.get_total_mineral_weight()
+        self.assertEqual(mineral_weight, 0 , "Total mineral weight of blocks in block model is incorrect")
+
+    def test_get_air_percentage_of_border_case(self):
+        air_percentage = self.block_model_1.get_air_percentage()
+        self.assertEqual(air_percentage, 1, "Air percentage of block model is incorrect")
+
+    def test_max_values(self):
+        max_x  = self.block_model.max_x
+        max_y = self.block_model.max_y
+        max_z = self.block_model.max_z
+        max_found_x = max([block.x for block in self.block_model.blocks])
+        max_found_y = max([block.y for block in self.block_model.blocks])
+        max_found_z = max([block.z for block in self.block_model.blocks])
+
+        self.assertEqual((max_x,max_y,max_z),(max_found_x,max_found_y,max_found_z), "Maximum values of coordinates x, y, z doesnt match the blocks of the block model")
 
