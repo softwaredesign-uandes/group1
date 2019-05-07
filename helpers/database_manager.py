@@ -106,6 +106,7 @@ class Manager():
 				continue
 		return response
 
+
 	def grade_to_percentage(self, value, weight, unit):
 		if unit == 'tonn':
 			return value / weight
@@ -115,4 +116,13 @@ class Manager():
 			return value / 10000
 		else:
 			return value
-				
+
+	def get_max_x_y_z_value(self, mineral_deposit_name, block_model_name):
+		block_model = self.db.block_models.find_one({"mineral_deposit_name": mineral_deposit_name, "name": block_model_name})
+		x = block_model["data_map"]["x"]
+		y = block_model["data_map"]["y"]
+		z = block_model["data_map"]["z"]
+		block_max_x = self.db.blocks.find({}).sort([(x, -1)]).limit(1)
+		block_max_y = self.db.blocks.find({}).sort([(y, -1)]).limit(1)
+		block_max_z = self.db.blocks.find({}).sort([(z, -1)]).limit(1)
+		return block_max_x.next()[x], block_max_y.next()[y], block_max_z.next()[z]

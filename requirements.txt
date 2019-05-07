@@ -1,1 +1,2 @@
+numpy
 pymongo==3.7.2
