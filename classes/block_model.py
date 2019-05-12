@@ -1,6 +1,7 @@
 from itertools import repeat, product
 import numpy as np
 from classes.block import Block
+from classes.block_group import BlockGroup
 
 
 class BlockModel:
@@ -56,19 +57,25 @@ class BlockModel:
 				air_blocks += 1
 		return air_blocks / self.count_blocks()
 
-	def reblock(self, rx, ry, rz):
-		new_blocks = self.run_through_all_blocks_to_reblock(rx, ry, rz)
+	def reblock(self, rx, ry, rz, virtual):
+		new_blocks = self.run_through_all_blocks_to_reblock(rx, ry, rz, virtual)
 		self.blocks = new_blocks
 		# change maximum x, y, z at the end of the reblocking
 		return True
 
-	def run_through_all_blocks_to_reblock(self, rx, ry, rz):
+	def run_through_all_blocks_to_reblock(self, rx, ry, rz, virtual):
 		def create_block(old_coordinates, new_dimensions):
 			new_x = old_coordinates[0] // new_dimensions[0]
 			new_y = old_coordinates[1] // new_dimensions[1]
 			new_z = old_coordinates[2] // new_dimensions[2]
-			new_weight, new_grade_values = self.collect_blocks_information(old_coordinates, new_dimensions)
-			new_blocks.append(Block(self.name, new_x, new_y, new_z, new_weight, new_grade_values, data=None))
+			if virtual:
+				block_group = BlockGroup(self.name, new_x, new_y, new_z)
+				self.collect_blocks(block_group, old_coordinates, new_dimensions)
+				new_blocks.append(block_group)
+			else:
+				new_weight, new_grade_values = self.collect_blocks_information(old_coordinates, new_dimensions)
+				new_blocks.append(Block(
+								self.name, new_x, new_y, new_z, new_weight, new_grade_values, data=None))
 		new_blocks = []
 		new_x, new_y, new_z = 0, 0, 0
 		range_x, range_y, range_z = get_range_x_y_z(self, rx, ry, rz)
@@ -76,6 +83,17 @@ class BlockModel:
 		list(map(create_block, product(range_x, range_y, range_z), repeat(new_dimensions)))
 		set_new_max_coordinates(self, new_x, new_y, new_z)
 		return new_blocks
+
+	def collect_blocks(self, block_group, old_coordinates, new_dimensions):
+		def get_block(coordinates, block_group):
+			current_block = self.get_block_by_coordinates(coordinates[0], coordinates[1], coordinates[2])
+			block_group.add_block(current_block)
+		old_x, old_y, old_z = old_coordinates
+		rx, ry, rz = new_dimensions
+		range_x = range(old_x, min(old_x + rx, self.max_x + 1))
+		range_y = range(old_y, min(old_y + ry, self.max_y + 1))
+		range_z = range(old_z, min(old_z + rz, self.max_z + 1))
+		list(map(get_block, product(range_x, range_y, range_z), repeat(block_group)))
 
 	def collect_blocks_information(self, old_coordinates, new_dimensions):
 		def analyse_block(coordinates, info_dict):
