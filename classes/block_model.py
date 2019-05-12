@@ -47,10 +47,8 @@ class BlockModel:
 		return total_weight
 
 	def get_total_mineral_weight(self):
-		total_mineral_weight = 0
-		for block in self.blocks:
-			for grade in block.grade_values:
-				total_mineral_weight += block.weight * grade
+		total_mineral_weight = sum(map(lambda block : sum (map (lambda grade : block.weight * grade, block.grade_values)), self.blocks))
+
 		return total_mineral_weight
 
 	def get_air_percentage(self):
