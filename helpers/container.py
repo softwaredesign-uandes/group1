@@ -38,7 +38,7 @@ class  Container:
         elif metrics[response] == 'Percentage of "Air" blocks':
             print("The air blocks percentage of {} is {}.".format(self.mineral_deposit.name, self.get_air_blocks_percentage_of_mineral_deposit()))
 
-    def present_self(self):
+    def present_to_user_the_options(self):
         print("Welcome to the mining block monitor system.")
         if self.mineral_deposit is None:
             db_manager = Manager()
