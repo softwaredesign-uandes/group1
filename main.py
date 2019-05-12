@@ -14,7 +14,7 @@ def main(args):
 		else:
 			db_manager.insert_blocks(args.mineral_deposit, args.block_model, args.file_input)
 	elif args.remove:
-		db_manager.remove__all_blocks_from_block_model(args.mineral_deposit, args.block_model)
+		db_manager.remove_all_blocks_from_block_model(args.mineral_deposit, args.block_model)
 	elif args.metrics:
 		if args.mineral_deposit:
 			mineral_deposit = db_manager.fetch_mineral_deposit(args.mineral_deposit)

@@ -1,6 +1,6 @@
 from classes.mineral_deposit import MineralDeposit
 from classes.block_model import BlockModel
-from helpers.database_manager import Manager
+from .database_manager import Manager
 
 class  Container:
     def __init__(self):
