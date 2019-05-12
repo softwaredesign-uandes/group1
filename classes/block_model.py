@@ -1,6 +1,7 @@
-from classes.block import Block
-import numpy as np
 from itertools import repeat, product
+import numpy as np
+from classes.block import Block
+
 
 class BlockModel:
 	def __init__(self, name, mineral_deposit, headers, data_map, max_x, max_y, max_z):
@@ -20,7 +21,7 @@ class BlockModel:
 			y = element.pop(self.data_map["y"], None)
 			z = element.pop(self.data_map["z"], None)
 			weight = element.pop(self.data_map["weight"], None)
-			grades =self.data_map["grade"].values()
+			grades = self.data_map["grade"].values()
 			grades_values = []
 			for grade in grades:
 				mineral_grade = element.pop(grade, None)
@@ -28,7 +29,7 @@ class BlockModel:
 			new_block = Block(model, x, y, z, weight, grades_values, element)
 			self.blocks.append(new_block)
 
-	def get_block_by_coordinates(self,x, y, z):
+	def get_block_by_coordinates(self, x, y, z):
 		result = next((block for block in self.blocks if block.x == x and block.y == y and block.z == z), None)
 		return result
 
@@ -38,20 +39,20 @@ class BlockModel:
 	def get_total_weight(self):
 		total_weight = 0.0
 		for block in self.blocks:
-			total_weight += block.weight
+			total_weight += block.get_weight()
 		return total_weight
 
 	def get_total_mineral_weight(self):
 		total_mineral_weight = 0
 		for block in self.blocks:
-			for grade in block.grade_values:
-				total_mineral_weight += block.weight * grade
+			for grade in block.get_grade_values():
+				total_mineral_weight += block.get_weight() * grade
 		return total_mineral_weight
 
 	def get_air_percentage(self):
 		air_blocks = 0
 		for block in self.blocks:
-			if block.weight == 0:
+			if block.get_weight() == 0:
 				air_blocks += 1
 		return air_blocks / self.count_blocks()
 
@@ -80,14 +81,14 @@ class BlockModel:
 		def analyse_block(coordinates, info_dict):
 			current_block = self.get_block_by_coordinates(coordinates[0], coordinates[1], coordinates[2])
 			if current_block is not None:
-				info_dict["new_total_weight"] += current_block.weight
-				info_dict["new_grade_values"] += (np.array(current_block.grade_values) * current_block.weight)
+				info_dict["new_total_weight"] += current_block.get_weight()
+				info_dict["new_grade_values"] += (current_block.get_grade_values() * current_block.get_weight())
 
 		old_x, old_y, old_z = old_coordinates
 		rx, ry, rz = new_dimensions
 		information = {
-			"new_total_weight": 0,
-			"new_grade_values": np.zeros(len(self.data_map['grade']))
+						"new_total_weight": 0,
+						"new_grade_values": np.zeros(len(self.data_map['grade']))
 		}
 		range_x = range(old_x, min(old_x + rx, self.max_x + 1))
 		range_y = range(old_y, min(old_y + ry, self.max_y + 1))
