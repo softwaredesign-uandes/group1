@@ -13,8 +13,8 @@ class Manager:
 		self.gmanager = GManager()
 
 	def insert_new_mineral_deposit(self, data_file):
-		file = open(data_file)
-		data = file.readline().strip().split(',')
+		file_of_mineral_deposit_headers = open(data_file)
+		data = file_of_mineral_deposit_headers.readline().strip().split(',')
 		name = data[0]
 		minerals = data[1:]
 		self.db.mineral_deposits.insert_one({ "name": name, "minerals": minerals })
@@ -26,13 +26,13 @@ class Manager:
 		headers = parse_headers(headers_file)
 		mineral_deposit = self.fetch_mineral_deposit(mineral_deposit_name)
 		data_map = self.gmanager.map_headers(headers, mineral_deposit["minerals"])
-		name = ""
-		while name == "":
-			name = input("What would you like to name this block model?\n>>> ")
-			if self.fetch_block_model(mineral_deposit_name, name) != None:
+		name_of_block_model = ""
+		while name_of_block_model == "":
+			name_of_block_model = input("What would you like to name this block model?\n>>> ")
+			if self.fetch_block_model(mineral_deposit_name, name_of_block_model) != None:
 				print("A block model with that name already exist within this mineral deposit.")
-				name = ""
-		self.db.block_models.insert_one({ "name": name, "mineral_deposit_name": mineral_deposit_name, "headers": headers, "data_map": data_map })
+				name_of_block_model = ""
+		self.db.block_models.insert_one({ "name": name_of_block_model, "mineral_deposit_name": mineral_deposit_name, "headers": headers, "data_map": data_map })
 
 	def fetch_block_model(self, mineral_deposit, block_model):
 		return self.db.block_models.find_one({ "name": block_model, "mineral_deposit_name": mineral_deposit })
