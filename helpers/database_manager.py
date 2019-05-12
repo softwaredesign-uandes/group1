@@ -37,34 +37,52 @@ class Manager:
 	def fetch_block_model(self, mineral_deposit, block_model):
 		return self.db.block_models.find_one({ "name": block_model, "mineral_deposit_name": mineral_deposit })
 
-	def insert_blocks(self, mineral_deposit, block_model, data_file):
-		model = self.fetch_block_model(mineral_deposit, block_model)
+	def get_params_from_model(self, model):
 		headers = model["headers"]
 		amount_headers = len(headers)
-		data = parse_file(data_file)
 		data_map = model["data_map"]
 		weight_column = data_map["weight"]
 		weight_column_index = headers.index(weight_column)
 		grades_data_map = data_map["grade"]
+		return headers, amount_headers, data_map, weight_column, weight_column_index, grades_data_map
+
+	def insert_blocks(self, mineral_deposit, block_model, data_file):
+		model = self.fetch_block_model(mineral_deposit, block_model)
+		headers, amount_headers, data_map, weight_column, weight_column_index, grades_data_map = self.get_params_from_model(model)
+		data = parse_file(data_file)
 		data_array = []
-		my_units = {}
 		grade_units = ['tonn', 'percentage', 'oz/tonn', 'ppm']
+		self.print_units(grade_units)
+		my_units = self.select_options_for_units(grade_units, grades_data_map)
+		for item in data:
+			document = self.create_block_document(mineral_deposit,block_model,amount_headers,headers,grades_data_map,item,weight_column_index,grade_units,my_units)
+			data_array.append(document)
+		self.db.blocks.insert_many(data_array)
+
+
+	def print_units(self, grade_units):
 		print("In which of the following units is each of the grades:")
 		for index in range(len(grade_units)):
 			print("\t{}. {}".format(index + 1, grade_units[index]))
+
+
+	def select_options_for_units(self, grade_units, grades_data_map):
+		my_units = {}
 		for grade in grades_data_map:
-			print("{}: ".format(grade), end = '')
+			print("{}: ".format(grade), end='')
 			unit_index = self.gmanager.get_valid_index(grade_units) - 1
 			my_units[grades_data_map[grade]] = unit_index
-		for item in data:
-			document = { "mineral_deposit": mineral_deposit, "block_model": block_model }
-			for index in range(amount_headers):
-				if headers[index] in grades_data_map.values():
-					transformed = self.gmanager.grade_to_percentage(item[index], item[weight_column_index], grade_units[my_units[headers[index]]])
-					item[index] = transformed
-				document[headers[index]] = item[index]
-			data_array.append(document)
-		self.db.blocks.insert_many(data_array)
+		return my_units
+
+
+	def create_block_document(self, mineral_deposit, block_model, amount_headers, headers, grades_data_map, item, weight_column_index, grade_units, my_units):
+		document = {"mineral_deposit": mineral_deposit, "block_model": block_model}
+		for index in range(amount_headers):
+			if headers[index] in grades_data_map.values():
+				transformed = self.gmanager.grade_to_percentage(item[index], item[weight_column_index], grade_units[my_units[headers[index]]])
+				item[index] = transformed
+			document[headers[index]] = item[index]
+		return document
 
 	def find_by_coordinates(self, mineral_deposit, block_model, coordinates_string):
 		coordinates = [int(x) for x in coordinates_string.strip().split(',')]
