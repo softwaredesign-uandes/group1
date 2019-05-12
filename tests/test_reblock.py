@@ -103,10 +103,10 @@ class TestReblock(unittest.TestCase):
 		self.assertEqual(old_blocks_weight, new_blocks_weight)
 
 	def test_new_mineral_percentage_on_virtual_reblock(self):
-		old_mineral_weight = self.block_model.get_total_mineral_weight()
+		old_mineral_weight = round(self.block_model.get_total_mineral_weight())
 		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=True)
-		new_mineral_weight = self.block_model.get_total_mineral_weight()
-		self.assertEqual(old_mineral_weight, new_mineral_weight)
+		new_mineral_weight = round(self.block_model.get_total_mineral_weight())
+		self.assertAlmostEqual(old_mineral_weight, new_mineral_weight)
 
 	def test_max_values_on_virtual_reblock(self):
 		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=True)
