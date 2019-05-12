@@ -1,15 +1,12 @@
 def parse_file(file):
 	block_objects = []
 	file = open(file, "r")
-	for row in file:
-		raw_data = row.strip().split()
-		for index in range(len(raw_data)):
-			try:
-				float_value = float(raw_data[index])
-				raw_data[index] = float_value
-			except:
-				continue
-		block_objects.append(raw_data)
+	raw_data = list(map(lambda row : row.strip().split(), file))
+	try :
+		raw_data = map(float, list(map(lambda row : row.strip().split(), file)))
+	except:
+		pass
+	block_objects.append(raw_data)
 	return block_objects
 
 
