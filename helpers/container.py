@@ -61,5 +61,3 @@ class  Container:
     def get_air_blocks_percentage_of_mineral_deposit(self):
         return self.block_model.get_air_percentage()
 
-
-
