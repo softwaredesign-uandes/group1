@@ -1,6 +1,6 @@
 from classes.mineral_deposit import MineralDeposit
 from classes.block_model import BlockModel
-from .database_manager import Manager
+from database_manager import Manager
 
 class  Container:
     def __init__(self):
@@ -38,6 +38,24 @@ class  Container:
         elif metrics[response] == 'Percentage of "Air" blocks':
             print("The air blocks percentage of {} is {}.".format(self.mineral_deposit.name, self.get_air_blocks_percentage_of_mineral_deposit()))
 
+    def generate_action(self, response, coordinates):
+        # self.present_self()
+        metrics = ['Search by coordinates', 'Number of blocks', 'Total weight of the mineral deposit', 'Total mineral weight of the mineral deposit', 'Percentage of "Air" blocks']
+
+        if metrics[response] == "Search by coordinates":
+            x,y,z = coordinates
+            return str(self.get_block_by_coordinates(x,y,z))
+        elif metrics[response] == "Number of blocks":
+            return "This block model has {} blocks in it.".format(self.get_number_of_blocks())
+        elif metrics[response] == 'Total weight of the mineral deposit':
+            return "The total weight of {} is {}.".format(self.mineral_deposit.name, self.get_total_weight_of_mineral_deposit())
+        elif metrics[response] == 'Total mineral weight of the mineral deposit':
+            return "The total mineral weight of {} is {}.".format(self.mineral_deposit.name, self.get_total_mineral_weight_of_mineral_deposit())
+        elif metrics[response] == 'Percentage of "Air" blocks':
+            return "The air blocks percentage of {} is {}.".format(self.mineral_deposit.name, self.get_air_blocks_percentage_of_mineral_deposit())
+
+
+
     def present_to_user_the_options(self):
         print("Welcome to the mining block monitor system.")
         if self.mineral_deposit is None:
@@ -46,8 +64,8 @@ class  Container:
             db_result = db_manager.fetch_mineral_deposit(mineral_deposit_name)
             self.set_mineral_deposit(db_result)
 
-    def get_block_by_coordinates(self):
-        return self.block_model.get_block_by_coordinates()
+    def get_block_by_coordinates(self,x,y,z):
+        return self.block_model.get_block_by_coordinates(x,y,z)
 
     def get_number_of_blocks(self):
         return self.block_model.count_blocks()

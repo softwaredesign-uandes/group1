@@ -1,7 +1,7 @@
 from pymongo import MongoClient
-from .connection_params import CONNECTION_PARAMS as params
-from .file_parser import parse_file, parse_headers
-from .general_manager import GManager
+from connection_params import CONNECTION_PARAMS as params
+from file_parser import parse_file, parse_headers, parse_headers_url, parse_file_url
+from general_manager import GManager
 
 class Manager:
 	def __init__(self):
@@ -33,6 +33,7 @@ class Manager:
 				print("A block model with that name already exist within this mineral deposit.")
 				name_of_block_model = ""
 		self.db.block_models.insert_one({ "name": name_of_block_model, "mineral_deposit_name": mineral_deposit_name, "headers": headers, "data_map": data_map })
+
 
 	def fetch_block_model(self, mineral_deposit, block_model):
 		return self.db.block_models.find_one({ "name": block_model, "mineral_deposit_name": mineral_deposit })
@@ -105,3 +106,24 @@ class Manager:
 		block_max_y = self.db.blocks.find({}).sort([(y, -1)]).limit(1)
 		block_max_z = self.db.blocks.find({}).sort([(z, -1)]).limit(1)
 		return block_max_x.next()[x], block_max_y.next()[y], block_max_z.next()[z]
+
+
+	##FORAPI##
+	def insert_new_block_model_with_name(self, mineral_deposit_name, headers,data_map, name_of_block_model):
+
+		self.db.block_models.insert_one(
+			{"name": name_of_block_model, "mineral_deposit_name": mineral_deposit_name, "headers": headers,
+			 "data_map": data_map})
+
+	def insert_blocks_from_url(self, mineral_deposit, block_model, data_file, my_units):
+		model = self.fetch_block_model(mineral_deposit, block_model)
+		headers, amount_headers, data_map, weight_column, weight_column_index, grades_data_map = self.get_params_from_model(model)
+		data = parse_file_url(data_file)
+		data_array = []
+		grade_units = ['tonn', 'percentage', 'oz/tonn', 'ppm']
+		for item in data:
+			document = self.create_block_document(mineral_deposit,block_model,amount_headers,headers,grades_data_map,item,weight_column_index,grade_units,my_units)
+			data_array.append(document)
+		self.db.blocks.insert_many(data_array)
+
+
