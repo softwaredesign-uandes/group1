@@ -3,9 +3,10 @@ from helpers.arguments_manager import manage_arguments
 from helpers.container import Container
 
 
-def main(args):
+def main(arguments):
 	db_manager = Manager()
 	manager = Container()
+  
 	if args.insert and args.file_input:
 		insert(args, db_manager)
 	elif args.remove:
@@ -34,6 +35,7 @@ def metrics(args, db_manager, manager):
 			manager.set_block_model(block_model, blocks)
 	manager.interact_with_user()
 
+
 if __name__ == "__main__":
-	args = manage_arguments()
-	main(args)
+	ARGS = manage_arguments()
+	main(ARGS)

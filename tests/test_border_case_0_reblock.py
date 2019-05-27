@@ -58,28 +58,36 @@ class TestReblock(unittest.TestCase):
 		self.ry = 1
 		self.rz = 1
 
-
-
-
-
-
-
 	def test_change_block_quantity(self):
-		self.block_model.reblock(self.rx, self.ry, self.rz)
+		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=False)
 		new_blocks = self.block_model.count_blocks()
 		self.assertEqual(new_blocks, 4)
 
-
 	def test_new_weight(self):
 		old_blocks_weight = self.block_model.get_total_weight()
-		self.block_model.reblock(self.rx, self.ry, self.rz)
+		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=False)
 		new_blocks_weight = self.block_model.get_total_weight()
 		self.assertEqual(old_blocks_weight, new_blocks_weight)
 
-
 	def test_new_mineral_percentage(self):
 		old_mineral_weight = self.block_model.get_total_mineral_weight()
-		self.block_model.reblock(self.rx, self.ry, self.rz)
+		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=False)
 		new_mineral_weight = self.block_model.get_total_mineral_weight()
 		self.assertEqual(old_mineral_weight, new_mineral_weight)
 
+	def test_change_block_quantity_on_virtual_reblock(self):
+		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=True)
+		new_blocks = self.block_model.count_blocks()
+		self.assertEqual(new_blocks, 4)
+
+	def test_new_weight_on_virtual_reblock(self):
+		old_blocks_weight = self.block_model.get_total_weight()
+		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=True)
+		new_blocks_weight = self.block_model.get_total_weight()
+		self.assertEqual(old_blocks_weight, new_blocks_weight)
+
+	def test_new_mineral_percentage_on_virtual_reblock(self):
+		old_mineral_weight = self.block_model.get_total_mineral_weight()
+		self.block_model.reblock(self.rx, self.ry, self.rz, virtual=True)
+		new_mineral_weight = self.block_model.get_total_mineral_weight()
+		self.assertEqual(old_mineral_weight, new_mineral_weight)
