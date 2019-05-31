@@ -45,8 +45,8 @@ class  Container:
 			db_result = db_manager.fetch_mineral_deposit(mineral_deposit_name)
 			self.set_mineral_deposit(db_result)
 
-	def get_block_by_coordinates(self):
-		return self.block_model.get_block_by_coordinates()
+	def get_block_by_coordinates(self,x,y,z):
+		return self.block_model.get_block_by_coordinates(x,y,z)
 
 	def get_number_of_blocks(self):
 		return self.block_model.count_blocks()
@@ -59,3 +59,13 @@ class  Container:
 
 	def get_air_blocks_percentage_of_mineral_deposit(self):
 		return self.block_model.get_air_percentage()
+
+	def generate_action(self):
+
+		metric_hash = {}
+		metric_hash['total_weight'] = self.get_total_weight_of_mineral_deposit()
+		metric_hash['num_blocks'] = self.get_number_of_blocks()
+		metric_hash['air_blocks_percentage'] = self.get_air_blocks_percentage_of_mineral_deposit()
+		metric_hash['mineral_weight'] = self.get_total_mineral_weight_of_mineral_deposit()
+		return metric_hash
+		

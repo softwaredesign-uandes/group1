@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from connection_params import CONNECTION_PARAMS as params
 from file_parser import parse_file, parse_headers, parse_headers_url, parse_file_url
 from general_manager import GManager
+from bson.objectid import ObjectId
 
 class Manager:
 	def __init__(self):
@@ -18,9 +19,20 @@ class Manager:
 		name = data[0]
 		minerals = data[1:]
 		self.db.mineral_deposits.insert_one({ "name": name, "minerals": minerals })
+	
+	def insert_new_mineral_deposit_from_name(self, element):
+		self.db.mineral_deposits.insert_one(element)
 
 	def fetch_mineral_deposit(self, mineral_deposit):
 		return self.db.mineral_deposits.find_one({ "name": mineral_deposit })
+
+	def fetch_mineral_deposit_by_id(self, mineral_deposit_id):	
+		name =  self.db.mineral_deposits.find_one({'_id': ObjectId(mineral_deposit_id)})
+		cursor_all_block_models = self.db.block_models.find({'mineral_deposit_name':name['name']})
+		return {"id": mineral_deposit_id, "name": name['name'], "block_models": cursor_all_block_models}
+	
+	def fetch_all_mineral_deposit(self):
+		return self.db.mineral_deposits.find({})
 
 	def insert_new_block_model(self, mineral_deposit_name, headers_file):
 		headers = parse_headers(headers_file)
@@ -37,6 +49,13 @@ class Manager:
 
 	def fetch_block_model(self, mineral_deposit, block_model):
 		return self.db.block_models.find_one({ "name": block_model, "mineral_deposit_name": mineral_deposit })
+
+	def fetch_all_block_models(self):
+		return self.db.block_models.find()
+
+	def fetch_block_model_from_id(self, block_model_id):
+		block_model = self.db.block_models.find_one({'_id': ObjectId(block_model_id)},{'_id':0})
+		return block_model
 
 	def get_params_from_model(self, model):
 		headers = model["headers"]
@@ -92,6 +111,8 @@ class Manager:
 	def get_all_blocks_from_block_model(self, mineral_deposit, block_model):
 		return self.db.blocks.find({ "mineral_deposit": mineral_deposit, "block_model": block_model })
 
+	def get_block_from_id(self, block_id):
+		return self.db.blocks.find_one({'_id': ObjectId(block_id)},{'_id':0})
 
 	def remove_all_blocks_from_block_model(self, mineral_deposit, block_model):
 		return self.db.blocks.remove({ "mineral_deposit_name": mineral_deposit, "block_model": block_model })

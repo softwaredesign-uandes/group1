@@ -22,8 +22,13 @@ from ApiSoftwareDesign import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^insert_block_model$', views.InsertBlockModel.as_view()),
-    url(r'^insert_blocks$', views.InsertBlocks.as_view()),
-    url(r'^get_metrics$', views.GetMetrics.as_view()),
+    path('mineral_deposits/', views.MineralDeposit.as_view()),
+    path('mineral_deposits/<str:id>/', views.MineralDeposit.as_view()),
+    path('block_models/', views.BlockModel.as_view()),
+
+    path('block_models/<str:id>/', views.BlockModel.as_view()),
+    path('block_models/<str:id>/blocks/', views.Blocks.as_view()),
+    path('block_models/<str:id>/blocks/<str:id_block_param>', views.Blocks.as_view()),
+
 
 ]
