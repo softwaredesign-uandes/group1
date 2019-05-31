@@ -34,7 +34,8 @@ class BlockModel:
 			grades_values.append(mineral_grade)
 		return grades_values
 
-	def get_block_by_coordinates(self,x, y, z):
+
+	def get_block_by_coordinates(self, x, y, z):
 		result = next((block for block in self.blocks if block.x == x and block.y == y and block.z == z), None)
 		return result
 
@@ -48,7 +49,6 @@ class BlockModel:
 		return total_weight
 
 	def get_total_mineral_weight(self):
-
 		total_mineral_weight = sum(map(lambda block : sum (map (lambda grade : block.weight * grade, block.grade_values)), self.blocks))
 		return total_mineral_weight
 
