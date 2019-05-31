@@ -19,5 +19,6 @@ class Block(AbstractBlock):
 		return np.array(self.grade_values)
 
 	def __str__(self):
-		return "{}\nX: {}\tY: {}\tZ: {}\nWeight: {}\tGrade: {}\t Data: {}".format(
-						self.model.upper(), self.x, self.y, self.z, self.weight, self.grade_values, self.data)
+
+		return "{} X: {} Y: {} Z: {} Weight: {} Grade: {} Data: {}".format(self.model.upper(), self.x, self.y, self.z, self.weight, self.grade_values, self.data)
+

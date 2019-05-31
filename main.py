@@ -34,6 +34,7 @@ def metrics(args, db_manager, manager):
 			manager.set_block_model(block_model, blocks)
 	manager.interact_with_user()
 
+
 if __name__ == "__main__":
 	args = manage_arguments()
 	main(args)
