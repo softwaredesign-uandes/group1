@@ -1,9 +1,6 @@
 __pycache__/
-<<<<<<< HEAD
-.idea
-=======
 .idea/workspace.xml
 .idea/
 .vscode/
 .pylintrc
->>>>>>> 64c279d0117cbfb50cfb1e2e0e06ba5aca0e9f02
+
