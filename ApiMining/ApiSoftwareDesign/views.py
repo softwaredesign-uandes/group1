@@ -101,9 +101,23 @@ class BlockModel(APIView):
      def post(self, request):
         if request.data.get('block_model') is not None:
             #reblock
-            reblocked_model={}
+            value = request.data.get('block_model') 
+            json_acceptable_string = value.replace("'", "\"")
+            value = json.loads(json_acceptable_string)
 
-            return Response(reblocked_model)
+            block_model_query = db_manager.fetch_block_model_from_id(value['base_block_model_id'])
+            mineral_deposit = db_manager.fetch_mineral_deposit(block_model_query['mineral_deposit_name'])
+            manager.set_mineral_deposit(mineral_deposit)        
+            block_model = db_manager.fetch_block_model(block_model_query['mineral_deposit_name'], block_model_query['name'])
+            blocks = db_manager.get_all_blocks_from_block_model(block_model_query['mineral_deposit_name'], block_model_query['name'])
+            manager.set_block_model(block_model, blocks)
+            rx = value['reblock_x']
+            ry = value['reblock_y']
+            rz = value['reblock_z']
+
+            manager.block_model.reblock(rx, ry, rz, True)
+
+            return Response(True)
         
         params = generate_params_block_model()
        
