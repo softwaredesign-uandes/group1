@@ -32,6 +32,13 @@ def generate_params_metrics():
 
     return ['mineral_deposit', 'block_model', 'metric_wanted', 'coordinates']
 
+class DataMap(APIView):
+    def get(self, request, id=-1):
+        block_model = db_manager.fetch_block_model_from_id(id)
+        response = {
+            "data_map": block_model["data_map"]
+        }
+        return Response(response)
 
 class MineralDeposit(APIView):
     def get(self,request,id=-1):
@@ -96,6 +103,7 @@ class BlockModel(APIView):
             response_metric = manager.generate_action()     
             response["block_model"].update({'id':id})
             response["block_model"].update(response_metric)
+            response["data_map"] = block_model["data_map"]
 
 
         return Response(response)
@@ -151,7 +159,7 @@ class Blocks(APIView):
             block_model_query = db_manager.fetch_block_model_from_id(id)
             all_blocks = db_manager.get_all_blocks_from_block_model(block_model_query['mineral_deposit_name'], block_model_query['name'])
             response = { "blocks": []}
-            for block in all_blocks [:4000]:
+            for block in all_blocks[:12000]:
                 block_hash={}
                 id_block =  block.get('_id')
                 block_hash['id'] = str(id_block)

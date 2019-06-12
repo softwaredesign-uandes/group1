@@ -1,5 +1,3 @@
-import pandas as pd
-
 def parse_file(file):
 	block_objects = []
 	file = open(file, "r")

@@ -27,6 +27,7 @@ urlpatterns = [
     path('block_models/', views.BlockModel.as_view()),
 
     path('block_models/<str:id>/', views.BlockModel.as_view()),
+    path('block_models/<str:id>/data_map', views.DataMap.as_view()),
     path('block_models/<str:id>/blocks/', views.Blocks.as_view()),
     path('block_models/<str:id>/blocks/<str:id_block_param>', views.Blocks.as_view()),
 
