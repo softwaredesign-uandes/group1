@@ -81,7 +81,9 @@ class BlockModel(APIView):
             for block_model in cursor_all_block_models:
                 block_model_hash={}
                 id_block_model =  block_model.get('_id')                
-                block_model_hash['id'] = str(id_block_model)  
+                block_model_hash['id'] = str(id_block_model)
+                block_model_hash['name'] =  block_model.get('name')
+                block_model_hash['mineral_deposit'] =  block_model.get('mineral_deposit_name')
                 response["block_models"].append(block_model_hash)
         else:
             response = { "block_model": {}}
@@ -149,7 +151,7 @@ class Blocks(APIView):
             block_model_query = db_manager.fetch_block_model_from_id(id)
             all_blocks = db_manager.get_all_blocks_from_block_model(block_model_query['mineral_deposit_name'], block_model_query['name'])
             response = { "blocks": []}
-            for block in all_blocks:
+            for block in all_blocks [:4000]:
                 block_hash={}
                 id_block =  block.get('_id')
                 block_hash['id'] = str(id_block)
