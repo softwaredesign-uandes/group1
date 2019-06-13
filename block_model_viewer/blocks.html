@@ -5,7 +5,9 @@
 		<title>three.js webgl - interactive - voxel painter</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<link type="text/css" rel="stylesheet" href="files/main.css">
+		<link type="text/css" rel="stylesheet" href="files/toggle.css">
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 		<script src="files/three.js"></script>
 		<script src="files/orbitControls.js"></script>
@@ -19,9 +21,58 @@
 			a {
 				color: #08f;
 			}
+			div#header {
+				margin-top: 1%;
+				margin-left: 2%;
+			}
+			img.logo {
+				margin-right: 0.5%;
+			}
+			div#filters {
+				margin-left: 1%;
+			}
+			div.form-group {
+				margin-right: 1%;
+			}
+			.logo:hover{ 
+				animation: wiggle 150ms infinite;
+				animation-timing-function: linear;   
+			}
+
+			@keyframes wiggle {
+  				0% { transform: translate(2px, 0); }
+  				50% { transform: translate(-2px, 0); }
+  				100% { transform: translate(2px, 0); }
+			}
 		</style>
 	</head>
 	<body>
-	<h1>Hola mundo</h1>
+	<div id="header" class="row">
+		<img src="files/icon.png" class="logo" width="auto" height="40">
+		<h1><b>Mike the Miner</b></h1>
+	</div>
+	<div id="filters">
+		<div class="form-row">
+			<div class="form-group">
+				<label for="mineral-deposit-select">Mineral Deposit</label>
+				<select class="form-control mb-2 mr-sm-2" id="mineral-deposit-select">
+					<option id="default" selected></option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="block-model-select">Block Models</label>
+				<select class="form-control mb-2 mr-sm-2" id="block-model-select" disabled>
+					<option id="default" selected></option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="transparent-toggle">Transparency</label><br/>
+				<label class="switch">
+					<input id="transparent-toggle" type="checkbox">
+					<span class="slider round"></span>
+				</label>
+			</div>
+		</div>
+	</div>
 	</body>
 </html>

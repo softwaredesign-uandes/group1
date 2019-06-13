@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     if (WEBGL.isWebGLAvailable() === false) {
         document.body.appendChild( WEBGL.getWebGLErrorMessage() );
     }
@@ -12,14 +13,73 @@ $(document).ready(function() {
     var blockSize = 50;
     var currentGrade = "Au";
     var transparent = false;
+    var blockModelId;
+    var mineralDepositId;
 
+    function fetchMineralDeposits() {
+        var url = encodeURI("http://127.0.0.1:8000/mineral_deposits/");	
+        fetch(url)
+            .then(function(response) {
+                var data = response.json();
+                var promise = Promise.resolve(data);
+                promise.then(function(value) {
+                    mineralDeposits = value.mineral_deposits
+                    var mineralDepositSelect = $("select#mineral-deposit-select");
+                    mineralDeposits.forEach(function(mineralDeposit) {
+                        mineralDepositSelect.append($("<option />").val(mineralDeposit.id).text(mineralDeposit.name));
+                    })
+                });
+            });
+    }
+
+    function fetchMineralDepositBlocks() {
+        var url = encodeURI("http://127.0.0.1:8000/mineral_deposits/" + mineralDepositId + "/");	
+        fetch(url)
+            .then(function(response) {
+                var data = response.json();
+                var promise = Promise.resolve(data);
+                promise.then(function(value) {
+                    blockModels = value.mineral_deposit.block_models
+                    var blockModelSelect = $("select#block-model-select");
+                    blockModelSelect.find('option').not('#default').remove();
+                    if (blockModels.length === 0) {
+                        blockModelSelect.attr("disabled", true);
+                        blockModelSelect.find('option#default').attr("disabled", false);
+                        alert("This Mineral Deposit has no Block Models!");
+                    } else {
+                        blockModelSelect.attr("disabled", false);
+                        blockModels.forEach(function(blockModel) {
+                            blockModelSelect.append($("<option />").val(blockModel.id).text(blockModel.name));
+                        })
+                    }
+                });
+            });
+    }
+
+    $("select#mineral-deposit-select").on("change", function(){
+        $("select#mineral-deposit-select option#default").attr("disabled", true);
+        mineralDepositId = $("select#mineral-deposit-select option:selected").val();
+        fetchMineralDepositBlocks();
+    })
+
+    $("select#block-model-select").on("change", function(){
+        $("select#block-model-select option#default").attr("disabled", true);
+        blockModelId = $("select#block-model-select option:selected").val();
+        createObjects();
+    })
+
+    $("#transparent-toggle").on("change", function(){
+        transparent = !transparent;
+        loadBlockModel();
+    })
+
+    fetchMineralDeposits();
     init();
     animate();
 
     function init() {
         createScene();
         createLights();
-        createObjects();
         createCamera();
         createRenderer();
         createCameraControls();
@@ -41,21 +101,21 @@ $(document).ready(function() {
     }
     
     function createObjects() {
-        function fetchDataMap(idBlockModel) {
-            var url = encodeURI("http://127.0.0.1:8000/block_models/"+idBlockModel+"/data_map");	
+        function fetchDataMap() {
+            var url = encodeURI("http://127.0.0.1:8000/block_models/"+blockModelId+"/data_map");	
             fetch(url)
                 .then(function(response) {
                     var data = response.json();
                     var promise = Promise.resolve(data);
                     promise.then(function(value) {
                         dataMap = value.data_map
-                        fetchBlocks(idBlockModel);
+                        fetchBlocks(blockModelId);
                     });
                 });
         }
     
-        function fetchBlocks(idBlockModel) {
-            var url = encodeURI("http://127.0.0.1:8000/block_models/"+idBlockModel+"/blocks/");	
+        function fetchBlocks() {
+            var url = encodeURI("http://127.0.0.1:8000/block_models/"+blockModelId+"/blocks/");	
             fetch(url)
                 .then(function(response) {
                     var data = response.json();
@@ -68,8 +128,7 @@ $(document).ready(function() {
         }
     
         cubeGeometry = new THREE.BoxBufferGeometry( blockSize, blockSize, blockSize );
-        var idBlockModel = "5ceb2e1f107fae448cf06f5a";
-        fetchDataMap(idBlockModel);
+        fetchDataMap(blockModelId);
     }
     
     function loadBlockModel() {
@@ -159,12 +218,7 @@ $(document).ready(function() {
             case 67: //c
                 currentGrade = "Cu";
                 loadBlockModel();
-                break;
-            case 84: //t
-                transparent = !transparent;
-                loadBlockModel();
-                break;
-    
+                break;    
         }
     }
     
