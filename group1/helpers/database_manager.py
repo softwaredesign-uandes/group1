@@ -50,6 +50,12 @@ class Manager:
 	def fetch_block_model(self, mineral_deposit, block_model):
 		return self.db.block_models.find_one({ "name": block_model, "mineral_deposit_name": mineral_deposit })
 
+	def update_block_model(self, block_model_id, mineral_deposit_name, headers,data_map, name_of_block_model):
+	
+		self.db.block_models.update({ "_id": block_model_id}, {"name": name_of_block_model, "mineral_deposit_name": mineral_deposit_name, "headers": headers,
+			 "data_map": data_map})
+
+
 	def fetch_all_block_models(self):
 		return self.db.block_models.find()
 
@@ -148,3 +154,14 @@ class Manager:
 		self.db.blocks.insert_many(data_array)
 
 
+	def update_blocks_from_url(self, mineral_deposit, block_model, data_file, my_units):
+		model = self.fetch_block_model(mineral_deposit, block_model)
+		headers, amount_headers, data_map, weight_column, weight_column_index, grades_data_map = self.get_params_from_model(model)
+		data = parse_file_url(data_file)
+		data_array = []
+		grade_units = ['tonn', 'percentage', 'oz/tonn', 'ppm']
+		for item in data:
+			document = self.create_block_document(mineral_deposit,block_model,amount_headers,headers,grades_data_map,item,weight_column_index,grade_units,my_units)
+			data_array.append(document)
+		self.db.blocks.delete_many({'mineral_deposit':mineral_deposit, 'block_model':block_model})
+		self.db.blocks.insert_many(data_array)

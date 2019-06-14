@@ -148,11 +148,17 @@ class BlockModel(APIView):
                value = json.loads(json_acceptable_string)
             values_params[instance] = value
         if None not in values_params.values():
-            db_manager.insert_new_block_model_with_name(values_params["mineral_deposit"], values_params["headers"] ,values_params["data_map"], values_params["block_model"] )
-            db_manager.insert_blocks_from_url(values_params['mineral_deposit'],values_params['block_model'], values_params['file_block_model'], values_params['units'])
-        
-        
+            block_model_older = db_manager.fetch_block_model(values_params["mineral_deposit"], values_params["block_model"])
+            print(block_model_older)
+            if block_model_older is None:
+                db_manager.insert_new_block_model_with_name(values_params["mineral_deposit"], values_params["headers"] ,values_params["data_map"], values_params["block_model"] )
+                db_manager.insert_blocks_from_url(values_params['mineral_deposit'],values_params['block_model'], values_params['file_block_model'], values_params['units'])
+            else:
+                db_manager.update_block_model(block_model_older['_id'],values_params["mineral_deposit"], values_params["headers"] ,values_params["data_map"], values_params["block_model"] )
+                db_manager.update_blocks_from_url(values_params['mineral_deposit'],values_params['block_model'], values_params['file_block_model'], values_params['units'])
+
         return Response(values_params)
+        
         
 class Blocks(APIView):
      def get(self,request,id=-1, id_block_param=-1):
