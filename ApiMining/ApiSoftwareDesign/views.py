@@ -101,7 +101,7 @@ class BlockModel(APIView):
         return Response(response)
 
      def post(self, request):
-        if request.data.get('block_model') is not None:
+        if request.data.get('block_model_reblock') is not None:
             #reblock
             value = request.data.get('block_model') 
             json_acceptable_string = value.replace("'", "\"")
