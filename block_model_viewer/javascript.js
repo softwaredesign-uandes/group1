@@ -15,6 +15,10 @@ $(document).ready(function() {
     var transparent = false;
     var blockModelId;
     var mineralDepositId;
+    var mineralColors = {
+        "Cu": 168,
+        "Au": 50
+    }
 
     function fetchMineralDeposits() {
         var url = encodeURI("http://127.0.0.1:8000/mineral_deposits/");	
@@ -68,6 +72,12 @@ $(document).ready(function() {
         createObjects();
     })
 
+    $("select#mineral-select").on("change", function(){
+        $("select#mineral-select option#default").attr("disabled", true);
+        currentGrade = $("select#mineral-select option:selected").val();
+        loadBlockModel();
+    })
+
     $("#transparent-toggle").on("change", function(){
         transparent = !transparent;
         loadBlockModel();
@@ -109,9 +119,25 @@ $(document).ready(function() {
                     var promise = Promise.resolve(data);
                     promise.then(function(value) {
                         dataMap = value.data_map
+                        populateMineralSelect();
                         fetchBlocks(blockModelId);
                     });
                 });
+        }
+
+        function populateMineralSelect() {
+            var mineralSelect = $("select#mineral-select");
+            mineralSelect.find('option').not('#default').remove();
+            if (Object.keys(dataMap.grade).length === 0) {
+                mineralSelect.attr("disabled", true);
+                mineralSelect.find('option#default').attr("disabled", false);
+                alert("This Mineral Deposit has no Minerals!");
+            } else {
+                mineralSelect.attr("disabled", false);
+                for (const [key, value] of Object.entries(dataMap.grade)) {
+                    mineralSelect.append($("<option />").text(key));
+                }
+            }
         }
     
         function fetchBlocks() {
@@ -157,7 +183,7 @@ $(document).ready(function() {
         function getBlockColor(block) {
             if (block[gradeHeader] < 0.001)
                 return new THREE.Color(0x999999);
-            var hue = currentGrade == "Cu" ? 168 : 50;
+            var hue = mineralColors[currentGrade];
             var lightning = Math.floor(block[gradeHeader] * 70);
             var hsl = "hsl("+ hue + ", 100%, " + lightning + "%)";
             return new THREE.Color(hsl);
@@ -191,7 +217,6 @@ $(document).ready(function() {
     
     function setEventListeners() {
         window.addEventListener( 'resize', onWindowResize, false );
-        document.addEventListener( 'keydown', onDocumentKeyDown, false );
     }
     
     function clearScene() {
@@ -201,34 +226,16 @@ $(document).ready(function() {
     }
     
     function onWindowResize() {
-    
+
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-    
         renderer.setSize( window.innerWidth, window.innerHeight );
     
     }
     
-    function onDocumentKeyDown( event ) {
-        switch ( event.keyCode ) {
-            case 65: //a
-                currentGrade = "Au";
-                loadBlockModel();
-                break;
-            case 67: //c
-                currentGrade = "Cu";
-                loadBlockModel();
-                break;    
-        }
-    }
-    
     function animate() {
-    
         requestAnimationFrame( animate );
-    
         controls.update();
-    
         renderer.render( scene, camera );
-    
     }
 })

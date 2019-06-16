@@ -166,7 +166,7 @@ class Blocks(APIView):
             block_model_query = db_manager.fetch_block_model_from_id(id)
             all_blocks = db_manager.get_all_blocks_from_block_model(block_model_query['mineral_deposit_name'], block_model_query['name'])
             response = { "blocks": []}
-            for block in all_blocks[:4000]:
+            for block in all_blocks:
                 block_hash={}
                 id_block =  block.get('_id')
                 block_hash['id'] = str(id_block)
