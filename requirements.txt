@@ -1,0 +1,6 @@
+numpy
+pymongo==3.7.2
+django
+djangorestframework
+django-cors-headers
+python-dateutil

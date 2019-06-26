@@ -32,6 +32,13 @@ def generate_params_metrics():
 
     return ['mineral_deposit', 'block_model', 'metric_wanted', 'coordinates']
 
+class DataMap(APIView):
+    def get(self, request, id=-1):
+        block_model = db_manager.fetch_block_model_from_id(id)
+        response = {
+            "data_map": block_model["data_map"]
+        }
+        return Response(response)
 
 class MineralDeposit(APIView):
     def get(self,request,id=-1):
@@ -51,8 +58,9 @@ class MineralDeposit(APIView):
             list_block_models = []
             for block_model in cursor_mineral_deposit_block_models['block_models']:
                 block_model_hash={}
-                id_block_model =  block_model.get('_id')             
+                id_block_model =  block_model.get('_id')
                 block_model_hash['id'] = str(id_block_model)
+                block_model_hash['name'] = str(block_model.get('name'))
                 list_block_models.append(block_model_hash)
             body = dict(cursor_mineral_deposit_block_models)
             body['block_models'] = list_block_models
@@ -81,7 +89,9 @@ class BlockModel(APIView):
             for block_model in cursor_all_block_models:
                 block_model_hash={}
                 id_block_model =  block_model.get('_id')                
-                block_model_hash['id'] = str(id_block_model)  
+                block_model_hash['id'] = str(id_block_model)
+                block_model_hash['name'] =  block_model.get('name')
+                block_model_hash['mineral_deposit'] =  block_model.get('mineral_deposit_name')
                 response["block_models"].append(block_model_hash)
         else:
             response = { "block_model": {}}
@@ -94,12 +104,13 @@ class BlockModel(APIView):
             response_metric = manager.generate_action()     
             response["block_model"].update({'id':id})
             response["block_model"].update(response_metric)
+            response["data_map"] = block_model["data_map"]
 
 
         return Response(response)
 
      def post(self, request):
-        if request.data.get('block_model') is not None:
+        if request.data.get('block_model_reblock') is not None:
             #reblock
             value = request.data.get('block_model') 
             json_acceptable_string = value.replace("'", "\"")
@@ -137,11 +148,17 @@ class BlockModel(APIView):
                value = json.loads(json_acceptable_string)
             values_params[instance] = value
         if None not in values_params.values():
-            db_manager.insert_new_block_model_with_name(values_params["mineral_deposit"], values_params["headers"] ,values_params["data_map"], values_params["block_model"] )
-            db_manager.insert_blocks_from_url(values_params['mineral_deposit'],values_params['block_model'], values_params['file_block_model'], values_params['units'])
-        
-        
+            block_model_older = db_manager.fetch_block_model(values_params["mineral_deposit"], values_params["block_model"])
+            print(block_model_older)
+            if block_model_older is None:
+                db_manager.insert_new_block_model_with_name(values_params["mineral_deposit"], values_params["headers"] ,values_params["data_map"], values_params["block_model"] )
+                db_manager.insert_blocks_from_url(values_params['mineral_deposit'],values_params['block_model'], values_params['file_block_model'], values_params['units'])
+            else:
+                db_manager.update_block_model(block_model_older['_id'],values_params["mineral_deposit"], values_params["headers"] ,values_params["data_map"], values_params["block_model"] )
+                db_manager.update_blocks_from_url(values_params['mineral_deposit'],values_params['block_model'], values_params['file_block_model'], values_params['units'])
+
         return Response(values_params)
+        
         
 class Blocks(APIView):
      def get(self,request,id=-1, id_block_param=-1):
